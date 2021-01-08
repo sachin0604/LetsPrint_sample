@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<% include bankCommanComp/header.ejs %>
+
+<style>
+        @media screen and (max-width: 992px) {
+            .topmarginForSmall {
+                margin-top: 15px;
+                float: left !important;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <% include bankCommanComp/navbar.ejs %>
+    <main class="paddingBody">
+        <div class="row">
+            <div class="col s12 m12 l12 formBG">
+
+                <form id="savePayeeNameForm">
+                    <input type="hidden" id="payeeId" name="payeeId" value="0">
+                    <div class="input-field col s2 m2 l3">
+                        <input type="text" id="payeeName" name="payeeId" value="" placeholder="Enter Payee Name" required>
+                        <label for="payeeName"> Enter Payee Name</label>
+                    </div>
+                    <div class="input-field col s2 m2 l3">
+                        <input type="text" id="payeeAddress" name="payeeAddress" value="" placeholder="Enter Payee Address" required>
+                        <label for="payeeAddress"> Enter Payee Address</label>
+                    </div>
+                    <div class="input-field col s4 l3 m4 btnmarginInform center addPayee" style="width:180px">
+                        <button id="savePayeeSubmit" onclick="addPayee();" class="btn waves-effect waves-light blue-gradient"
+                            type="button" name="action"><i class="material-icons left">add</i>Add</button>
+                    </div>
+
+                    <div class="input-field col s6 l2 m3 btnmarginInform center editPayee" style="width:150px">
+                        <button id="editPayee" onclick="submitEditedData();" class="btn waves-effect waves-light blue-gradient" type="button" name="action"><i class="material-icons left" >send</i>update</button>
+                    </div>
+             
+                    <div class="input-field col s3 l3 m3 btnmarginInform center" style="width:210px">
+                        <button id="resetPayeeSubmit" class="btn waves-effect waves-light resetBtnColor" type="button"
+                            name="action"><i class="left material-icons">refresh</i>Reset</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="print-col">Sr.No</th>
+                                <th class="print-col">Payee Name</th>
+                                <th class="print-col">Payee Address</th>
+                                <th class="print-col">Added Date</th>
+                                <th class="print-col">Updated Date</th>
+                                <th class="print-col">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </main>
+
+  
+    <% include ../javascriptFiles/payee.ejs %>
+    <% include ../commonComponents/footer.ejs %>
+  
+</body>
+</html>

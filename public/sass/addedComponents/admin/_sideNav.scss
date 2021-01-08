@@ -1,0 +1,52 @@
+/* css start for sidenav */
+$sidenavIcon-color:#e0e0e0;
+.panelSideNav {
+    width: 240px !important;
+    opacity: 1;
+    background-color: $primary-color;
+    &.fixed{
+        top:0 !important;
+    }
+    & .collapsible-header {
+        min-height: 40px !important;
+    }
+    & .collapsible-body{
+        background-color:$primary-color !important;
+    }
+    & .collapsible-header:hover,
+    &.fixed .collapsible-header:hover{
+        background-color: transaprent;
+    }
+    & .collapsible-body li a,
+    &.fixed .collapsible-body li a{
+        padding: 0 16px;
+    }
+    & li>a {
+        color: $sidenavIcon-color;
+        display: block;
+        font-size: 15px;
+        font-weight: 350;
+        height: 40px !important;
+        line-height: 40px !important;
+        padding: 0 16px;
+    }
+    & .collapsible-header i {
+        font-weight: 150;
+        font-size:1.3rem !important;
+    }
+    & li>a>i.material-icons {
+        float: left;
+        font-weight: 150;
+        height: 40px !important;
+        line-height: 40px !important;
+        margin: 0 4px 0 0;
+        width: 24px;
+        color: #e0e0e0;
+        }
+}
+#sidenav-overlay {
+    background-color: transparent;
+}
+
+
+/* css end for sidenav */

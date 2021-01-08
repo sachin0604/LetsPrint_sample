@@ -1,0 +1,69 @@
+/*For Desktops*/
+
+@media screen and (min-width: 993px) {
+
+    .bulkInpBtn {
+        position: relative;
+        
+        top: 1.8rem ;
+    }
+
+    .file-field {
+        .btn {
+            position: relative;
+            top: 1rem;
+        }
+    }
+
+    .locForm {
+        padding:0 0.75rem !important;
+    }
+
+}
+
+/*For Tablets*/
+
+@media screen and (max-width: 992px) and (min-width: 600px) {
+
+    .bulkInpBtn {
+        position: relative;
+        
+        top: 1.8rem ;
+    }
+
+}
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+    .resetBtn {
+        position: relative;
+        left: 1.5rem;
+    }
+    
+    .locationTab {
+        padding-bottom: 3rem !important; 
+    }
+
+    .file-field {
+        .btn {
+            position: relative;
+            top: 1rem;
+        }
+    }
+
+    .bulkInpBtn {
+        position: relative;
+        left: .75rem !important;
+        top: .5rem ;
+    }
+
+}
+
+/*For Extra Small Mobiles {IPHONE 4}*/
+
+@media only screen and (max-width: 320px) {
+
+
+
+}

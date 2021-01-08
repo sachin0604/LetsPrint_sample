@@ -1,0 +1,60 @@
+/*For Desktops*/
+
+@media screen and (min-width: 993px) {
+
+    .issuePanel {
+        position: relative;
+        padding: 0 !important;
+        overflow: hidden;
+    }
+
+}
+
+/*For Tablets*/
+
+@media screen and (max-width: 992px) and (min-width: 600px) {
+
+
+
+}
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+
+
+}
+
+/*For Extra Small Mobiles {IPHONE 4}*/
+
+@media only screen and (max-width: 320px) {
+
+
+
+}
+
+.card-panel {
+    
+    p {
+    margin:5px	 !important;
+    font-size:16px !important;
+    color:black;
+    /* border:1px solid #9e9e9e; */
+    }
+}
+
+.card-panel {
+   padding:8px !important;
+   border-radius:8px;
+}
+
+.leftHeader {
+   width:10rem !important;
+   display:inline-block;
+}
+
+.customerInfoPanel {
+    padding: 0 .75rem !important;
+}
+
+

@@ -1,0 +1,280 @@
+   .imagesScroll {
+       //    height: 80vh !important;
+       /*width: 16.66% !important;*/
+       white-space: nowrap;
+       overflow-y: auto;
+       overflow-x: hidden;
+   }
+
+   .leftImg {
+       width: 13vh;
+       height: 13vh;
+       margin: 2px;
+       display: block; //    -moz-transition: all;
+       //    -webkit-transition: all;
+       //    transition: all;
+       &:hover,
+       &:focus,
+       .activeImg {
+           border: 1px solid blue;
+           @extend %cursorCss; //    -moz-transform: scale(1.1);
+           //    -webkit-transform: scale(1.1);
+           //    transform: scale(1.1);
+       }
+   }
+
+   .sideImagesUp {
+       position: absolute;
+       left: 25px;
+       width: 13vh;
+       padding-left: 10px;
+       text-align: center;
+       /*padding-right: 30px;
+                padding-left: 50px;*/
+   }
+
+   .sideImagesDown {
+       position: absolute;
+       left: 25px; //    transform: translate(0, 79vh);
+       width: 13vh;
+       text-align: center;
+       /*padding-right: 40px;
+                padding-left: 50px;*/
+   }
+
+   .imagesScroll::-webkit-scrollbar-track {
+       -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+       background-color: #fff;
+       border-radius: 10px;
+   }
+
+   .imagesScroll::-webkit-scrollbar {
+       height: 8px;
+       width: 5px;
+       background-color: #fff;
+   }
+
+   .imagesScroll::-webkit-scrollbar-thumb {
+       border-radius: 10px;
+       background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, rgba(122, 153, 217, 0)), color-stop(0.72, rgba(73, 125, 189, 0)), color-stop(0.86, rgba(28, 58, 148, 0)));
+   }
+
+   .wishlist {
+       position: absolute;
+       z-index: 999;
+       top: 2%;
+       right: 5%;
+       cursor: pointer;
+   }
+
+   .infoBtns {
+       .btn,
+       .btn-floating {
+           margin-bottom: 5px;
+       }
+   }
+
+   .imagesScroll {
+       /*height: 80vh !important;*/
+       /*width: 16.66% !important;*/
+       white-space: nowrap;
+       overflow-y: auto;
+       overflow-x: hidden;
+   }
+
+   .leftImg {
+       width: 13vh;
+       height: 13vh;
+       margin: 2px;
+       display: block;
+   }
+
+   .sideImagesUp {
+       position: absolute;
+       left: 25px;
+       width: 13vh;
+       padding-left: 10px;
+       text-align: center;
+       /*padding-right: 30px;
+                padding-left: 50px;*/
+   }
+
+   .sideImagesDown {
+       position: absolute;
+       left: 25px;
+       /*transform: translate(0, 79vh);*/
+       width: 13vh;
+       text-align: center;
+       /*padding-right: 40px;
+                padding-left: 50px;*/
+   }
+
+   .imagesScroll::-webkit-scrollbar-track {
+       -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+       background-color: #fff;
+       border-radius: 10px;
+   }
+
+   .imagesScroll::-webkit-scrollbar {
+       height: 8px;
+       width: 5px;
+       background-color: #fff;
+   }
+
+   .imagesScroll::-webkit-scrollbar-thumb {
+       border-radius: 10px;
+       background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, rgba(122, 153, 217, 0)), color-stop(0.72, rgba(73, 125, 189, 0)), color-stop(0.86, rgba(28, 58, 148, 0)));
+   }
+
+   .selectedColor {
+       border: 2px solid grey;
+       box-shadow: 3px 3px 10px grey;
+   }
+
+   .testScroll {
+       width: 81.3333333333%;
+       white-space: nowrap;
+       overflow: auto;
+       margin-left: 9.3333333333%;
+   }
+
+   .scrollImg {
+       display: inline-block;
+   }
+
+   .moreImageWidths {
+       width: 100px;
+       height: 100px;
+   }
+
+   .breadcrumb {
+       margin-bottom: -5px;
+   }
+
+   .productInfoAlignments {
+       text-align: left;
+   }
+
+   .productContainer {
+       width: auto;
+       padding-left: auto;
+       padding-right: auto;
+   }
+
+   @media only screen and (max-width: 992px) and (min-width: 601px) {
+       .productContainer {
+           width: 100vw;
+           padding-left: 5vw;
+           padding-right: 5vw;
+           h6 {
+               text-align: left;
+           }
+       }
+       .mainTitle {
+           margin-bottom: 5px;
+           margin-top: 5px;
+       }
+   }
+
+   @media only screen and (max-width: 601px) {
+       .colorTitle {
+           text-align: left;
+       }
+   }
+
+   .img-zoom-container {
+       position: relative;
+   }
+
+   .img-zoom-result {
+       position: absolute;
+       z-index: 999;
+       border: 1px solid #d4d4d4;
+       /*set the size of the result div:*/
+       margin-top: 0px;
+       width: 48vw;
+       height: 88vh;
+   }
+
+   .img-zoom-lens {
+       position: absolute;
+       border: 1px solid #d4d4d4;
+       opacity: 0.5;
+       background: #8093A7;
+       background-image: linear-gradient(white 2px, transparent 2px), linear-gradient(90deg, white 2px, transparent 2px), linear-gradient(rgba(255, 255, 255, .3) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .3) 1px, transparent 1px);
+       background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+       background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+       /*set the size of the lens:*/
+       width: 100px;
+       height: 100px;
+       cursor: crosshair;
+   }
+
+   .sizeButtons a.activeSize {
+       background: #ABB9DC;
+       color: white;
+   }
+
+   .colorButtons span.activeColor {
+       border: 4px groove gray;
+   }
+
+   .productCode {
+       font-size: 18px !important;
+       color: gray;
+   }
+
+   .cartIcon {
+       position: relative;
+   }
+
+   .cartIconMargin {
+       margin-right: 8px !important;
+   }
+
+   .heartBorder {
+       background: white;
+       border-radius: 50%;
+       padding: auto 1px;
+   }
+
+   .sizeDiv {
+       margin-top: 20px;
+   }
+
+   .callToActionButtons {
+       margin-right: 5%;
+       margin-bottom: 2%;
+   }
+
+   .checkDelivery {
+       margin-top: 25px;
+       margin-left: -10% !important;
+   }
+
+   @media only screen and (max-width: 992px) {
+       .productInfoAlignments {
+           text-align: center;
+           h5 {
+               line-height: 50%;
+           }
+       }
+       .sizeDiv {
+           margin-top: auto;
+       }
+       .checkDelivery {
+           margin-top: 25px;
+           margin-left: -15% !important;
+       }
+   }
+
+   @media only screen and (max-width: 601px) {
+       .callToActionButtons {
+           margin-right: 5%;
+           margin-bottom: 2%; //    width: 140px;
+       }
+       .checkDelivery {
+           margin-top: 25px;
+           margin-left: -15% !important;
+       }
+   }

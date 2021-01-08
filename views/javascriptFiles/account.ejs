@@ -1,0 +1,492 @@
+<script>
+    var bankId, accountType, accountHolderName, accountNumber, ifscCode, branchCode, address, minimumBalance;
+
+    $(document).ready(function () {
+        //to set data in bank dropdown
+        fetchBankData();
+        var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "12%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "4%",
+                "targets": 4
+            },
+            {
+                "width": "2%",
+                "targets": 5
+            },
+            {
+                "width": "2%",
+                "targets": 6
+            }
+        ];
+        var tableId = "tblData";
+        var pdfWidth = [20, '*', '*', '*'];
+        getDataTableJson(tableId, columnNo, pdfWidth); //get table structure
+
+
+        //only number allowed
+        $('.onlyNumberAllowed').keypress(function (event) {
+            var key = event.which;
+            if (!(key >= 48 && key <= 57 || key === 13 || key === 8))
+                event.preventDefault();
+        });
+
+        hitForTableData();
+    });
+
+    // hit for table data
+    function hitForTableData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_ACCOUNT_LIST%>"; //frontend url
+
+        //ajax call
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setTableData(data);
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    //set the table data 
+    function setTableData(resultData) {
+        // console.log(resultData);
+        var data = resultData.bankAccount;
+        var t = $('#tblData').DataTable();
+        t.clear().draw();
+        //if data is empty
+        if (data.length == null) {
+            t.row.add('<tr>' +
+                '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                '</tr>');
+        } else {
+            //if data is found
+
+            // $('#tblData tbody').empty();
+            // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+            for (i = 0; i < data.length; i++) {
+                var accounHolderName = data[i].accountHolderName,
+                    accounNo = data[i].accountNumber,
+                    ifscCode = data[i].ifscCode,
+                    branchAddress = data[i].bankAddress,
+                    bankAccountId = data[i].id,
+                    minimumBal = data[i].minimumBalance;
+                t.row.add(
+                    [(i + 1),
+                        accounHolderName,
+                        accounNo,
+                        minimumBal,
+                        ifscCode,
+                        branchAddress,
+                        '<a href="<%= FRONTEND.BASE_URL+BANK_FRONTEND.GET_UPDATE_PAGE_FOR_ACCOUNT%>/' +
+                        bankAccountId + '">' +
+                        '<i class="material-icons tooltipped" data-position="left" data-delay="50" data-tooltip="Edit" >edit</i></a>'
+                        // '<a onclick="editRow(this)" href="/updateAccount" class="btn-flat bankedit" data-name="' + accounHolderName +
+                        // '" data-short-name="' + accounNo + '" data-bankAccountId="' + bankAccountId +
+                        // '"> <i class="material-icons tooltipped" data-position="left" data-delay="50" data-tooltip="Edit" >edit</i></a>'
+                    ]).draw(false);
+            }
+        }
+    }
+
+    function editRow(data) {
+        e_id = $(data).attr("data-bankAccountId");
+        //for edit fetch old data first
+        fetchOldFormData(e_id);
+
+        // e_name = $(data).attr("data-name"),
+        //     e_shortName = $(data).attr("data-short-name"),
+        //     e_id = $(data).attr("data-bankId"),
+        // $("#bankname").val(e_name);
+        // $("#bankshortname").val(e_shortName);
+        // $("#bankname").attr("data-bankId", e_id);
+        // $(".addBank").hide();
+        // $(".editBrand").show();
+
+    }
+
+    //function to set req option for save account and hit frontend api
+    function addAccount() {
+        $('#saveAccountForm').attr('disabled', true);
+        var bankIdf = $("#bankId").val().trim();
+        var accountTypef = $("#accountType").val().trim();
+        var accountHolderNamef = $("#name").val().trim();
+        var accountNumberf = $("#accountNo").val().trim();
+        var ifscCodef = $("#ifscCode").val().trim();
+        var branchCodef = $("#branchCode").val().trim();
+        var addressf = $("#address").val().trim();
+        var minimumBalancef = $("#minimumBalance").val().trim();
+        if (bankIdf == 0) {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Bank name', '3000', 'toastError');
+            return false;
+        } else if (accountTypef == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Account Type', '3000', 'toastError');
+            return false;
+        } else if (accountHolderNamef == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Account Holder Name', '3000', 'toastError');
+            return false;
+        } else if (accountNumberf == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Account Number', '3000', 'toastError');
+            return false;
+        } else if (ifscCodef == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter IFSC Code', '3000', 'toastError');
+            return false;
+        } else if (branchCodef == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Branch Code', '3000', 'toastError');
+            return false;
+        } else if (addressf == "") {
+            $('#saveAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Bank Address', '3000', 'toastError');
+            return false;
+        } else {
+            ////Materialize.Toast.removeAll();
+            // checkForSpecialCharacters(bankname);
+            var data = {
+                bankId: bankIdf,
+                accountType: accountTypef,
+                accountHolderName: accountHolderNamef,
+                accountNumber: accountNumberf,
+                ifscCode: ifscCodef,
+                branchCode: branchCodef,
+                address: addressf,
+                minimumBalance: minimumBalancef
+            }
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.SAVE_ACCOUNT%>";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                dataType: 'json',
+                success: function (data) {
+
+                    // if (data != null) {
+                    //     window.location.href = "/admin"
+                    // }
+                    if (data.success == true) {
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMg');
+
+                        window.location.href = "/manageAccount";
+                        // hitForTableData();
+                    } else if (data.success == false) {
+                        $('#saveAccountForm').attr('disabled', false);
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#saveAccountForm').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+
+
+
+    //function to set req option for update account and hit frontend api
+    function updateAccount() {
+        $('#updateAccountForm').attr('disabled', true);
+        var bankAccountIdf = $("#bankAccountId").val().trim();
+        var bankIdf = $("#bankId").val().trim();
+        var accountTypef = $("#accountType").val().trim();
+        var accountHolderNamef = $("#name").val().trim();
+        var accountNumberf = $("#accountNo").val().trim();
+        var ifscCodef = $("#ifscCode").val().trim();
+        var branchCodef = $("#branchCode").val().trim();
+        var addressf = $("#address").val().trim();
+        var minimumBalancef = $("#minimumBalance").val().trim();
+        if (bankIdf == 0) {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Bank name', '3000', 'toastError');
+            return false;
+        } else if (accountTypef == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Account Type', '3000', 'toastError');
+            return false;
+        } else if (accountHolderNamef == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Account Holder Name', '3000', 'toastError');
+            return false;
+        } else if (accountNumberf == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Account Number', '3000', 'toastError');
+            return false;
+        } else if (ifscCodef == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter IFSC Code', '3000', 'toastError');
+            return false;
+        } else if (branchCodef == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Branch Code', '3000', 'toastError');
+            return false;
+        } else if (addressf == "") {
+            $('#updateAccountForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Bank Address', '3000', 'toastError');
+            return false;
+        } else {
+            ////Materialize.Toast.removeAll();
+            // checkForSpecialCharacters(bankname);
+            var data = {
+                bankAccountId: bankAccountIdf,
+                bankId: bankIdf,
+                accountType: accountTypef,
+                accountHolderName: accountHolderNamef,
+                accountNumber: accountNumberf,
+                ifscCode: ifscCodef,
+                branchCode: branchCodef,
+                address: addressf,
+                minimumBalance: minimumBalancef
+            }
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.UPDATE_ACCOUNT%>";
+
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                // beforeSend: function () {
+                //     $(".hiddenAjaxLoader").show();
+                // },
+                // complete: function () {
+                //     $(".hiddenAjaxLoader").hide();
+                // },
+                dataType: 'json',
+                success: function (data) {
+
+                    // if (data != null) {
+                    //     window.location.href = "/admin"
+                    // }
+                    if (data.success == true) {
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMg');
+                        // $('#saveAccountForm').attr('disabled', false);
+                        // $("#bankname").val("");
+                        // $("#bankshortname").val("");
+
+                        window.location.href = "/manageAccount";
+                        // hitForTableData();
+                    } else if (data.success == false) {
+                        $('#updateAccountForm').attr('disabled', false);
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#updateAccountForm').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+
+    // fetch Bank List for Dropdown
+    function fetchBankData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_BANK_LIST%>";
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setBankDataForDropDown(data);
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+
+                // w.postMessage({
+                //     cmd: TaskListMessage.LOAD_BRAND,
+                //     data: data
+                // });
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    // sets Bank data in drop down
+    function setBankDataForDropDown(bankData) {
+        var data = bankData.bank;
+        $("select#bankId").empty();
+
+        $('<option>', {
+            value: 0,
+            text: "Select Bank"
+        }).appendTo("select#bankId");
+
+        for (i = 0; i < data.length; i++) {
+            // for (i = data.length - 1; i >= 0; i--) {
+
+            $('<option>', {
+                value: data[i].id,
+                text: data[i].bankName
+            }).appendTo("select#bankId");
+        }
+        $("select#bankId").trigger("change");
+    }
+
+    //fetch old data by bankAccount id
+    function fetchOldFormData(bankAccountId) {
+
+        var bankAccountId = bankAccountId;
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_ACCOUNT_BY_ID %>" + "/" + bankAccountId;
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    
+                    //call setFormDataforUpdate function
+                    setFormDataForUpdate(data);
+
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+
+                // w.postMessage({
+                //     cmd: TaskListMessage.LOAD_BRAND,
+                //     data: data
+                // });
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    //set form data  for update
+    function setFormDataForUpdate(responseData) {
+
+
+        bankAccount = responseData;
+        // $("#bankAccountId").val(bankAccount.id);
+        $("#bankAccountId").focus();
+
+        $("#bankId").val(bankAccount.bankId).change();
+        $("#bankId").focus();
+
+        $("#accountType").val(bankAccount.accountType).change();
+        $("#accountType").focus();
+        $("#name").val(bankAccount.accountHolderName);
+        $("#name").focus();
+        $("#accountNo").val(bankAccount.accountNumber);
+        $("#accountNo").focus();
+        $("#ifscCode").val(bankAccount.ifscCode);
+        $("#ifscCode").focus();
+        $("#branchCode").val(bankAccount.branchCode);
+        $("#branchCode").focus();
+        $("#address").val(bankAccount.bankAddress);
+        $("#address").focus();
+        $("#minimumBalance").val(bankAccount.minimumBalance);
+        $("#minimumBalance").focus();
+
+    }
+</script>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <% include bankCommanComp/header.ejs %>
+
+    <style>
+        .lineDatePosition{
+            margin-top:0 !important;
+            }
+            .card {
+                height: 2.5rem;
+                line-height: 2.5rem;
+                margin-top: 0 !important;
+            }
+            
+            .card-image {
+                width: 35% !important;
+                background-color: #0073b7 !important;
+            }
+            
+            .card-image h6 {
+                padding: 5px;
+            }
+            
+            .card-stacked .card-content {
+                padding: 5px;
+            }
+            
+            .input-field {
+                position: relative;
+                margin-top: 0.5rem;
+            }
+            
+            /* #oneDateDiv {
+                                        margin-top: 0.5rem;
+                                        margin-left: 4%
+                                    } */
+            #area {
+                width: 35% !important;
+            }
+            
+            .actionDiv{
+                margin-top: 10px;
+            }
+            
+            .dateDimension {
+                display: table-cell;
+                vertical-align: middle;
+                padding:5px;
+            }
+            
+            .dateDimension p {
+                margin: 0 !important;
+            }
+            
+            .dateBox {
+                display: table-cell;
+                vertical-align: middle;
+            }
+            .sliderBtnsDiv{
+                display:none;
+            }
+            .contentData{
+            display:none;
+            }
+            @media only screen and (max-width: 600px) {
+                #area {
+                    width: 90% !important;
+                    border-radius: 10px !important;
+                }
+            }
+            
+            @media only screen and (min-width: 601px) and (max-width: 992px) {
+                #area {
+                    width: 70% !important;
+                }
+                .actionDiv {
+                    margin-top: 0;
+                }
+            }
+            @page {
+              margin-top:0 !important;
+            }
+            @media print {
+            
+                body * {
+                    visibility: hidden;
+                }
+                 .contentData, .contentData * {
+                    visibility: visible;
+                }
+                
+                
+                
+                .contentData div.container1{ 
+                    page-break-after: always;
+                    
+                    
+                }
+                
+                .contentData div.container1:last-child{ 
+                    page-break-after: avoid;
+                }
+                
+            
+                    #printBtn,.sliderBtnsDiv,#addImage,.chqImg {
+                    visibility: hidden;
+                }
+                  .contentData {
+                   position: relative !important;
+                   margin:0 !important;
+                left: 0 !important;
+                top: 0 !important;
+              }  
+            }
+            </style>
+
+
+</head>
+
+
+<body>
+
+    <div class="contentData" id="contentData">
+
+    </div>
+
+    <!-- navbar start -->
+    <% include bankCommanComp/navbar.ejs %>
+    <!--  navbar end -->
+    <main class="paddingBody">
+
+        <div class="row ">
+
+            <!-- <div class="row" style="margin-bottom:5px;">
+                <div class="col s12 m3 l3 push-l1 push-m1 ">
+                    <i class="material-icons prefix">view_stream </i>
+                    <span class="selectLabel"><span class="red-text">*&nbsp;
+                            <select id="bankAccountId" name="bankAccountId" required="" aria-required="true">
+                                <option value="0" selected>Select Bank Account</option>
+                            </select>
+                </div> -->
+            <div class="col s6 l3 m3 left left-align actionDiv filerMargin">
+                <select id="bankAccountId" name="bankAccountId" class="btnSelect">
+                    <option value="0">Select Account Number</option>
+
+                </select>
+            </div>
+
+            <!-- <div class="col s12 m3 l3 push-l1 push-m1 ">
+                    <i class="material-icons prefix">view_stream </i>
+                    <span class="selectLabel"><span class="red-text">*&nbsp;
+                            <select id="chequeBookId" name="chequeBookId" required="" aria-required="true">
+                                <option value="0" selected>Select Cheque Book</option>
+                            </select>
+                </div> -->
+            <div class="col s6 l3 m3 left left-align actionDiv filerMargin">
+                <select id="chequeBookId" name="chequeBookId" class="btnSelect">
+                    <option value="0">Select Cheque Book</option>
+                </select>
+            </div>
+
+            <!-- <div class="col s12 l3 m3  push-l1 push-m1 right">
+                    <a class="btn waves-effect waves-light blue-gradient" href="/manualPrint"><i class="material-icons left">add</i>Manual
+                        Cheque Print</a>
+                </div> -->
+
+            <div class="col s6 l3 m3 right right-align">
+                <a class="btn waves-effect waves-light blue-gradient" href="/manualPrint">
+                    <i class="material-icons left">add</i>Manual Cheque Print</a>
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="row col s12 m12 l12">
+                <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Sr.No</th>
+                            <th>Cheque No</th>
+                            <th>Payee Name</th>
+                            <th>Cheque Amount</th>
+                            <th>Cheque Date</th>
+                            <th>A/C Payee</th>
+                            <th>Remark</th>
+                            <th>Select For Print</th>
+                        </tr>
+
+                    </thead>
+                    <tbody id="chequeNumberPrintData">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col s12 l12 m12 ">
+                <button class="btn" id="printBtnMain" center onclick="printData()">Print</button>
+                <button class="btn" onclick="showPreview()">Preview</button>
+            </div>
+        </div>
+        </div>
+
+        <!-- PreView Model Start  -->
+        <!-- Modal Structure for Preview -->
+        <!-- <form action="" method="post" class="col s12 l12 m12" id="savePrintModal1"> -->
+            <div id="chqPreviewModal" class="modal">
+                <div class="modal-content">
+
+
+                </div>
+
+                <div class="modal-footer row">
+                    <div class="col s12 l12 m12  center">
+                        <button id="printBtn" type="button" class="btn">Print</button>
+                    </div>
+
+                    <div class="row sliderBtnsDiv">
+                        <div class="col s12 l12 m12  center">
+                            <button id="previousPreviewtBtn" type="button" class="btn">
+                                <i class="material-icons right">chevron_left</i>
+                            </button>
+
+                            <button id="nextPreviewtBtn" type="button" class="btn">
+                                <i class="material-icons right">chevron_right</i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        <!-- </form> -->
+        <!--PreView Model End  -->
+        <!-- msg Model -->
+
+    </main>
+    <% include   ../javascriptFiles/managePrint.ejs%>
+    <% include ../commonComponents/footer.ejs %>
+</body>
+
+
+
+</html>

@@ -1,0 +1,32 @@
+.heart {
+    stroke: black;
+    fill: transparent;            
+    stroke-dasharray:1000;
+    stroke-dashoffset:1000;
+    animation: dash 5s linear forwards;
+}
+
+.animateHeart {
+    stroke: black;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dashFill 2s linear forwards;
+
+}
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;         
+    }
+}
+@keyframes dashFill {
+    from{
+        stroke-dashoffset: 1000;
+        fill: transparent;
+        stroke: red;
+    }
+    to {
+        stroke-dashoffset: 0;
+        fill: red;
+        stroke: red;
+    }
+}

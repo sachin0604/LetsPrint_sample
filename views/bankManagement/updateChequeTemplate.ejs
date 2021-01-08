@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include bankCommanComp/header.ejs %>
+    <!-- <script type="text/javascript" src="resources/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="resources/js/jquery.ui.ruler.js"></script>
+        <link rel="stylesheet" href="resources/css/jquery.ui.ruler.css"> -->
+
+
+    <script src="<%=FRONTEND.FRONTEND_URL%>/javascripts/jquery-ui.min.js"></script>
+    <script src="<%=FRONTEND.FRONTEND_URL%>/javascripts/jquery.ui.ruler.js"></script>
+    <link href="<%=FRONTEND.FRONTEND_URL%>/stylesheets/jquery.ui.ruler.css" type="text/css" rel="stylesheet">
+
+    <!-- css -->
+    <style>
+        html, body {
+                    margin: 0 auto;
+                    width: 100%;
+                    height: 100%;
+                }
+                
+                #resizable {
+                    width: 150px;
+                    height: 150px;
+                    padding: 0.5em;
+                    border: 1px solid grey;
+                }
+                
+                #resizable h3 {
+                    text-align: center;
+                    margin: 0;
+                }
+                /* code for resizable */
+                .ui-resizable {
+                    position: relative;
+                }
+                
+                .ui-resizable-handle {
+                    position: absolute;
+                    font-size: 0.1px;
+                    display: block;
+                }
+                
+                .ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle
+                    {
+                    display: none;
+                }
+                
+                .ui-resizable-n {
+                    cursor: n-resize;
+                    height: 7px;
+                    width: 100%;
+                    top: -5px;
+                    left: 0;
+                }
+                
+                .ui-resizable-s {
+                    cursor: s-resize;
+                    height: 7px;
+                    width: 100%;
+                    bottom: -5px;
+                    left: 0;
+                }
+                
+                .ui-resizable-e {
+                    cursor: e-resize;
+                    width: 7px;
+                    right: -5px;
+                    top: 0;
+                    height: 100%;
+                }
+                
+                .ui-resizable-w {
+                    cursor: w-resize;
+                    width: 7px;
+                    left: -5px;
+                    top: 0;
+                    height: 100%;
+                }
+                
+                .ui-resizable-se {
+                    cursor: se-resize;
+                    width: 12px;
+                    height: 12px;
+                    right: 1px;
+                    bottom: 1px;
+                }
+                
+                .ui-resizable-sw {
+                    cursor: sw-resize;
+                    width: 9px;
+                    height: 9px;
+                    left: -5px;
+                    bottom: -5px;
+                }
+                
+                .ui-resizable-nw {
+                    cursor: nw-resize;
+                    width: 9px;
+                    height: 9px;
+                    left: -5px;
+                    top: -5px;
+                }
+                
+                .ui-resizable-ne {
+                    cursor: ne-resize;
+                    width: 9px;
+                    height: 9px;
+                    right: -5px;
+                    top: -5px;
+                }
+                /* code for resizable */
+                #upload-error {
+                    display: block;
+                }
+                
+                #container1 {
+                    /* border: 1px solid red;  */
+                    width: 840px;
+                    height: 380px;
+                    margin: 10px;
+                    padding: 10px;
+                    position: relative;
+                    margin: auto;
+                    overflow:hidden;
+                }
+                
+                #chequeForm {
+                    border: 1px solid red;
+                    width: 816px;
+                    height: 352px;
+                    /*margin: 10px;*/
+                    position: relative;
+                }
+                
+                #chqDate {
+                    position: absolute;
+                    right: 110px;
+                    top: 5%;
+                    width: 100px;
+                    height: 30px;
+                    min-height: 15px;
+                    max-height: 50px;
+                    min-width: 90px;
+                    border: 1px solid blue;
+                    padding: 5px;
+                    background: solid white;
+                }
+                #boxDate {
+                    display: table;
+                    border: 1px solid blue;
+                
+                }
+                #payeeName {
+                    position: absolute;
+                    left: 60px;
+                    top: 60px;
+                    width: 380px;
+                    height: 30px;
+                    border: 1px solid blue;
+                    padding: 5px;
+                    background-color: white;
+                    min-width: 290px;
+                }
+                
+                #amount {
+                    position: absolute;
+                    right: 60px;
+                    top: 130px;
+                    width: 100px;
+                    height: 30px;
+                    min-width: 60px;
+                    border: 1px solid blue;
+                    padding: 5px;
+                    background-color: white;
+                }
+                
+                #amountInWord {
+                    position: absolute;
+                    left: 120px;
+                    top: 100px;
+                    width: 380px;
+                    height: 30px;
+                    border: 1px solid blue;
+                    background-color: white;
+                    padding: 5px;
+                    min-width: 290px;
+                }
+                
+                #acPayee {
+                    position: absolute;
+                    left: 350px;
+                    top: 170px;
+                    width: 120px;
+                    height: 30px;
+                    border: 1px solid blue;
+                    background-color: white;
+                    padding: 5px;
+                    min-width: 75px;
+                }
+                
+                #showPosition {
+                    position: absolute;
+                    left: 300px;
+                    top: 200px;
+                    width: 120px;
+                    height: 40px;
+                    border: 1px solid blue;
+                    padding: 5px;
+                    min-width: 75px;
+                }
+                .dateDimension {
+                    display: table-cell;
+                    border: 1px solid grey;
+                    vertical-align: middle;
+                   background-color: white;
+                }
+                
+                 .dateDimension p {
+                     margin: 0px;
+                     text-align: center;
+                 }
+                /* #d1 {
+                    position: absolute;
+                    left: 4px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #d2 {
+                    position: absolute;
+                    left: 25px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #m1 {
+                    position: absolute;
+                    left: 46px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #m2 {
+                    position: absolute;
+                    left: 67px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #y1 {
+                    position: absolute;
+                    left: 88px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #y2 {
+                    position: absolute;
+                    left: 109px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #y3 {
+                    position: absolute;
+                    left: 131px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                }
+                
+                #y4 {
+                    position: absolute;
+                    left: 152px;
+                    top: 5px;
+                    height: 23px;
+                    width: 21px;
+                    border: 1px solid grey;
+                } */
+                
+                /* .dateBox {
+                    min-height: 10px;
+                    max-height: 25px;
+                    min-width: 10px;
+                    max-width: 30px;
+                
+                } */
+                
+                .textPosition {
+                    position: absolute;
+                    z-index: 999;
+                    top: 0px;
+                    bottom: 2px;
+                    margin: 0 !important;
+                    /* background: white; */
+                    left: 5px;
+                }
+                
+                .radio {
+                    position: absolute;
+                    left: 500px;
+                    top: 300px;
+                }
+                
+                .draggable {
+                    min-height: 25px;
+                }
+                </style>
+
+    <!-- css End -->
+</head>
+
+<body>
+    <!--navbar start-->
+    <% include bankCommanComp/navbar.ejs %>
+    <!--navbar end-->
+
+    <main class="paddingBody">
+        <br>
+        <div class="container">
+            <!-- <form onSubmit="updateTemplate()" method="POST" id="updateTemplateForm"> -->
+
+            <!-- Hidden Field for storing position  -->
+            <input type="hidden" id="chqDateTop" value="" name="chqDateTop">
+            <input type="hidden" id="chqDateLeft" value="" name="chqDateLeft">
+            <input type="hidden" id="chqDateWidth" value="" name="chqDateWidth">
+            <input type="hidden" id="chqDateHeight" value="" name="chqDateHeight">
+
+            <input type="hidden" id="payeeNameTop" value="" name="payeeNameTop">
+            <input type="hidden" id="payeeNameLeft" value="" name="payeeNameLeft">
+            <input type="hidden" id="payeeNameWidth" value="" name="payeeNameWidth">
+
+            <input type="hidden" id="amountTop" value="" name="amountTop">
+            <input type="hidden" id="amountLeft" value="" name="amountLeft">
+            <input type="hidden" id="amountWidth" value="" name="amountWidth">
+
+            <input type="hidden" id="amountInWordTop" value="" name="amountInWordTop">
+            <input type="hidden" id="amountInWordLeft" value="" name="amountInWordLeft">
+            <input type="hidden" id="amountInWordWidth" value="" name="amountInWordWidth">
+
+            <input type="hidden" id="acPayeeTop" value="" name="acPayeeTop">
+            <input type="hidden" id="acPayeeLeft" value="" name="acPayeeLeft">
+            <input type="hidden" id="acPayeeWidth" value="" name="acPayeeWidth">
+
+            <input type="hidden" id="dateFormate" value="boxFormate" name="dateFormate">
+            <input type="hidden" id="chequeImageBase64" value="" name="chequeImageBase64">
+
+            <input id="chequeTemplateId" type="hidden" class="validate" name="chequeTemplateId" value="<%-JSON.stringify(templateId)%>">
+
+            <div class="row z-depth-3">
+                <div class="col s12 m12 l12">
+                    <h4 class="center">Template Details</h4>
+                </div>
+
+                <div class="row" style="margin-bottom:5px;">
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1 ">
+                        <i class="material-icons prefix">view_stream </i>
+                        <span class="selectLabel"><span class="red-text">*&nbsp;
+                                <select id="bankId" name="bankId" required="" aria-required="true">
+                                    <option value="0" selected>Select Bank</option>
+                                </select>
+                    </div>
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1 ">
+                        <i class="material-icons prefix">person</i>
+                        <input id="identifierName" type="text" class="validate" name="identifierName" required>
+                        <label for="identifierName" class="active"><span class="red-text">*&nbsp;</span>Identifier
+                            Name</label>
+
+                    </div>
+
+                </div>
+
+                <br>
+                <br>
+
+                <div class="row">
+                    <div class="col s12 m5 l5 push-l1 push-m1">
+                        <input type="radio" name="dateRadio" id="boxDate1" checked onclick="showBoxDate();">
+                        <label for="boxDate1">Date Box Formate</label>
+
+                        <input type="radio" name="dateRadio" id="lineDate1" onclick="showLineDate();">
+                        <label for="lineDate1">Date Line Format</label>
+                    </div>
+
+                    <div class="col s12 m5 l5 push-l1 push-m1">
+                        <input type="file" id="upload" style="display: none;" name="file" />
+                        <input type="hidden" id="imgContentType" style="display: none;" name="imageType" />
+                        <button type="button" class="btn" id="uploadTemplateImg"><i class="material-icons left">arrow_upward</i>Upload
+                            Cheque Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Template Image position setting -->
+                <div class="container1" id="container1">
+
+                    <div class="col s12 m12 l12 center-align" style="height: 100%;padding:0;">
+
+
+
+                        <div class="col s12 m12 l12 center-align" style="padding:0">
+
+
+                            <img style="border: 1px solid; height: 360px; width: 816px;" id="addImage" ; />
+
+
+
+                            <div id="chqDate" class="chqDate" style="position: absolute; top: 5%; height: 30px; min-height: 15px; max-height: 50px; min-width: 90px; border: 0px solid blue; padding: 5px; background: solid white;">
+
+
+                                <div id="lineDate" style="display: none;">
+                                    <p class="textPosition">DD/MM/YYYY</p>
+                                </div>
+
+                                <!-- Box Formate Date Start here -->
+                                <div id="boxDate">
+                                    <div id="d1" class="dateBox dateDimension">
+                                        <p class="">D</p>
+                                    </div>
+
+                                    <div id="d2" class="dateBox dateDimension">
+                                        <p class="">D</p>
+                                    </div>
+
+                                    <div id="m1" class="dateBox dateDimension">
+                                        <p class="">M</p>
+                                    </div>
+
+                                    <div id="m2" class="dateBox dateDimension">
+                                        <p class="">M</p>
+                                    </div>
+
+                                    <div id="y1" class="dateBox dateDimension">
+                                        <p class="">Y</p>
+                                    </div>
+
+                                    <div id="y2" class="dateBox dateDimension">
+                                        <p class="">Y</p>
+                                    </div>
+
+                                    <div id="y3" class="dateBox dateDimension">
+                                        <p class="">Y</p>
+                                    </div>
+
+                                    <div id="y4" class="dateBox dateDimension">
+                                        <p class="">Y</p>
+                                    </div>
+
+                                </div>
+
+                                <!-- Box Format Date End here -->
+                            </div>
+
+
+                            <div id="payeeName" class="draggable" style="position: absolute; left: 60px; top: 60px; width: 400px; height: 30px; border: 0px solid blue; padding: 5px; background-color: white; min-width: 290px;">
+                                <p class="textPosition">Payee Name=====================></p>
+                            </div>
+
+                            <div id="amount" class="draggable" style="position: absolute; right: 60px; top: 130px; width: 130px; height: 30px; min-width: 60px; border: 0px solid blue; padding: 5px; background-color: white;">
+                                <p class="textPosition">*** Amount</p>
+                            </div>
+
+                            <div id="amountInWord" class="draggable" style="position: absolute; left: 120px; top: 100px; width: 380px; height: 30px; border: 0px solid blue; background-color: white; padding: 5px; min-width: 290px;">
+                                <p class="textPosition">Amount in word================></p>
+                            </div>
+
+                            <div id="acPayee" class="draggable" style="position: absolute; left: 350px; top: 170px; width: 120px; height: 30px; border: 0px solid white; background-color: white; padding: 5px; min-width: 75px;">
+                                <p class="textPosition">A/c Payee</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <br>
+
+                <!-- <div class="row">
+
+                        <div class="input-field col s12 m12 l12 center-align">
+                            <button class="btn waves-effect waves-light blue-gradient" onclick="saveTemplateClick();"
+                                type="submit" id="saveTemplate">
+                                Add Template<i class="material-icons right">send</i>
+                            </button>
+                            <br>
+                            <br>
+                        </div>
+                    </div> -->
+
+                <div class="row">
+
+                    <div class="input-field col s12 m12 l12 center-align">
+                        <button class="btn waves-effect waves-light blue-gradient" onclick="updateTemplate();" id="saveTemplate">
+                            Update Template<i class="material-icons right">send</i>
+                        </button>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+
+            </form>
+
+        </div>
+    </main>
+
+    <script>
+        $(document).ready(function () {
+            fetchBankData();
+            fetchCBTemplateById();
+            $(".draggable").draggable({
+                containment: "parent"
+            });
+            $(".draggable").resizable({
+                containment: "parent",
+                maxHeight: 35,
+                minWidth: 25,
+            });
+            $(".chqDate").draggable({
+                containment: "parent"
+            })
+            $(".chqDate").resizable({
+                containment: "parent",
+                minHeight: 20,
+                maxWidth: 220,
+                stop: displayNewDimensions
+            });
+            $('#container1').ruler({
+                unit: 'mm',
+                tickMajor: 10,
+                tickMinor: 5,
+                tickMicro: 2.5,
+                showLabel: true,
+            });
+
+            function displayNewDimensions(e, ui) {
+                var width = Math.round(ui.size.width),
+                    height = Math.round(ui.size.height);
+                var dateHeight = height;
+                var dateWidth = width / 8.25;
+                $("#chqDate").css({
+                    'width': width,
+                    'height': height
+                });
+                $('.dateDimension').css({
+                    'width': dateWidth,
+                    'height': height
+                });
+                //console.log('height :' + dateHeight + ",width :" + dateWidth);
+            }
+
+            //on click in upload image button upload click event execute
+            $("#uploadTemplateImg").click(function () {
+                $("#upload").click();
+            });
+
+            $('#chequeImageBase64').val(document.getElementById("addImage").src);
+
+            $('#upload').change(function (evt) {
+
+                var filename = $("#upload").val();
+
+                // Use a regular expression to trim everything before final dot
+                var extension = filename.replace(/^.*\./, '');
+
+                // Iff there is no dot anywhere in filename, we would have extension == filename,
+                // so we account for this possibility now
+                if (extension == filename) {
+                    extension = '';
+                } else {
+                    // if there is an extension, we convert to lower case
+                    // (N.B. this conversion will not effect the value of the extension
+                    // on the file upload.)
+                    extension = extension.toLowerCase();
+                }
+
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        {
+                            //alert("it's got an extension which suggests it's a PNG or JPG image (but N.B. that's only its name, so let's be sure that we, say, check the mime-type server-side!)");
+                            var tgt = evt.target || window.event.srcElement,
+                                files = tgt.files;
+
+                            var fileSize = files[0].size;
+                            var kb = fileSize / 1024;
+                            if (kb > 700) {
+                                Materialize.Toast.removeAll();
+                                Materialize
+                                    .toast(
+                                        'Please upload less than 700kb sizes image!',
+                                        '2000', 'red lighten-2');
+                                $("#upload").val('');
+                                /* $('#addeditmsg').modal('open');
+                                $('#head').text("Image Upload Error : ");
+                                $('#msg').text("Please upload less than 10kb sizes image"); */
+                                return false;
+                            }
+
+
+                            // FileReader support
+                            if (FileReader && files && files.length) {
+                                var fr = new FileReader();
+                                fr.onload = function () {
+                                    $('#chequeImageBase64').val("");
+                                    document.getElementById('addImage').src = fr.result;
+                                    $('#chequeImageBase64').val(fr.result);
+                                }
+                                fr.readAsDataURL(files[0]);
+                            }
+
+                            // Not supported
+                            else {
+                                // fallback -- perhaps submit the input to an iframe and temporarily store
+                                // them on the server until the user's session ends.
+                            }
+                            return false;
+                        }
+                        // uncomment the next line to allow the form to submitted in this case:
+                        //			          break;
+
+                    default:
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(
+                            'Only png and jpeg image is allowed!',
+                            '2000', 'red lighten-2');
+                        $("#upload").val('');
+                        /* $('#addeditmsg').modal('open');
+                         $('#head').text("Image Upload Error : ");
+                         $('#msg').text("Only png and jpeg image allowed"); */
+                        // Cancel the form submission
+                        return false;
+                }
+
+            });
+        });
+
+        //document.ready end here
+
+
+        $('#dateFormate').val("boxFormate");
+
+        function showBoxDate() {
+            $("#boxDate").show();
+            $("#lineDate").hide();
+            $('#dateFormate').val("");
+            $('#dateFormate').val("boxFormate");
+        }
+
+        function showLineDate() {
+            $("#boxDate").hide();
+            $("#lineDate").show();
+            $('#dateFormate').val("");
+            $('#dateFormate').val("lineFormate");
+
+        }
+
+
+        function positionSetting() {
+
+            /* Position Finding */
+
+            var position = $("#chqDate").position(),
+                height = $("#chqDate")
+                .height(),
+                width = $("#chqDate").width();
+            var offset = $("#chqDate").offset();
+
+
+            chqDateLeft = position.left;
+            chqDateWidth = $("#chqDate").width();
+
+            $('#chqDateTop').val(position.top);
+            $('#chqDateLeft').val(position.left);
+            $('#chqDateWidth').val($("#chqDate").width());
+            $('#chqDateHeight').val($("#chqDate").height());
+
+
+
+            $('#payeeNameTop').val($("#payeeName").position().top);
+            $('#payeeNameLeft').val($("#payeeName").position().left);
+            $('#payeeNameWidth').val($("#payeeName").width());
+
+            /* $('#payeeNameTop').val($("#payeeName").position().top);
+            $('#payeeNameLeft').val($("#payeeName").position().left);
+            $('#payeeNameWidth').val($("#payeeName").width()); */
+
+
+
+            $('#amountTop').val($("#amount").position().top);
+            $('#amountLeft').val($("#amount").position().left);
+            $('#amountWidth').val($("#amount").width());
+
+
+            $('#amountInWordTop').val($("#amountInWord").position().top);
+            $('#amountInWordLeft').val($("#amountInWord").position().left);
+            $('#amountInWordWidth').val($("#amountInWord").width());
+
+            $('#acPayeeTop').val($("#acPayee").position().top);
+            $('#acPayeeLeft').val($("#acPayee").position().left);
+            $('#acPayeeWidth').val($("#acPayee").width());
+
+
+
+
+            //console.log("Cheuqe date position details start");
+
+            //console.log("position" + JSON.stringify(position));
+            //console.log("offset.left" + JSON.stringify(offset.left));
+            //console.log("offset.top" + JSON.stringify(offset.top));
+            //console.log("height" + JSON.stringify(height));
+            //console.log("width" + JSON.stringify(width));
+
+            //console.log("Cheuqe date position details end");
+
+            var position1 = $("#payeeName").position(),
+                height1 = $("#payeeName")
+                .height(),
+                width1 = $("#payeeName").width();
+            var offset1 = $("#payeeName").offset();
+
+            //console.log("Payee Name position details start");
+            //console.log("position" + JSON.stringify(position1));
+            // //console.log("offset.left" + JSON.stringify(offset1.left));
+            // //console.log("offset.top" + JSON.stringify(offset1.top));
+            //console.log("height" + JSON.stringify(height1));
+            //console.log("width" + JSON.stringify(width1));
+
+            //console.log("Payee Name position details end");
+
+            var position3 = $("#amountInWord").position(),
+                height3 = $(
+                    "#amountInWord").height(),
+                width3 = $("#amountInWord").width();
+            var offset3 = $("#amountInWord").offset();
+
+            //console.log("Amount In Words  position details start");
+            //console.log("position" + JSON.stringify(position3));
+            // //console.log("offset.left" + JSON.stringify(offset3.left));
+            // //console.log("offset.top" + JSON.stringify(offset3.top));
+            //console.log("height" + JSON.stringify(height3));
+            //console.log("width" + JSON.stringify(width3));
+            //console.log("Amount in Words  position details end");
+
+            var position2 = $("#amount").position(),
+                height2 = $("#amount")
+                .height(),
+                width2 = $("#amount").width();
+            var offset2 = $("#amount").offset();
+
+            //console.log("Amount  position details start");
+            //console.log("position" + JSON.stringify(position2));
+            // //console.log("offset.left" + JSON.stringify(offset2.left));
+            // //console.log("offset.top" + JSON.stringify(offset2.top));
+            //console.log("height" + JSON.stringify(height2));
+            //console.log("width" + JSON.stringify(width2));
+            //console.log("Amount  position details end");
+
+            var position4 = $("#acPayee").position(),
+                height4 = $("#acPayee")
+                .height(),
+                width4 = $("#acPayee").width();
+            var offset4 = $("#acPayee").offset();
+
+            //console.log("À/c payee  position details start");
+            //console.log("position" + JSON.stringify(position4));
+
+            //console.log("height" + JSON.stringify(height4));
+            //console.log("width" + JSON.stringify(width4));
+            //console.log("A/c Payee  position details end");
+
+
+        }
+
+        // fetch Bank List for Dropdown
+        function fetchBankData() {
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_BANK_LIST%>";
+            $.ajax({
+                url: url,
+                type: "GET",
+                // data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        Materialize.Toast.removeAll();
+                        setBankDataForDropDown(data);
+
+                    } else if (data.success == false) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                    }
+
+                    // w.postMessage({
+                    //     cmd: TaskListMessage.LOAD_BRAND,
+                    //     data: data
+                    // });
+                },
+                error: function (xhr) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+
+
+        // sets Bank data in drop down
+        function setBankDataForDropDown(bankData) {
+            var data = bankData.bank;
+            $("select#bankId").empty();
+
+            $('<option>', {
+                value: 0,
+                text: "Select Bank"
+            }).appendTo("select#bankId");
+
+            for (i = 0; i < data.length; i++) {
+                // for (i = data.length - 1; i >= 0; i--) {
+
+                $('<option>', {
+                    value: data[i].id,
+                    text: data[i].bankName
+                }).appendTo("select#bankId");
+            }
+            $("select#bankId").trigger("change");
+        }
+
+        var templateId = '<%-JSON.stringify(templateId)%>';
+        //updateChque template
+        function fetchCBTemplateById() {
+            var url = '<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_CB_TEMPLATE_BY_ID%>/' + templateId;
+            $.ajax({
+                url: url,
+                type: "GET",
+                //  data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        chqTemplate = data.chqTemplate;
+                        setFormDataForUpdate(chqTemplate);
+                    }
+                },
+                error: function (xhr) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                }
+            });
+        }
+    </script>
+
+
+
+    <% include ../javascriptFiles/chequeTemplate.ejs %>
+    <% include ../commonComponents/footer.ejs %>
+</body>
+
+</html>

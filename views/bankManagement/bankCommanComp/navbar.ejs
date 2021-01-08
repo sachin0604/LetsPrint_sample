@@ -1,0 +1,108 @@
+<style>
+    /* for overcome the side-nav width on click of slide button */
+
+    .reveal-open {
+        max-width: 60px !important;
+        /*max-height: 100px !important;*/
+        /*margin-top: 62px;*/
+    }
+
+    /* for transition of sidenav width */
+
+    .side-nav {
+        /* overflow given to give effect of half hiding side nav */
+        /*overflow: hidden;*/
+        max-width: 225px;
+        /* to give effect of sliding of side navbar */
+        -webkit-transition: max-width .01s linear;
+        -moz-transition: max-width .01s linear;
+        transition: max-width .01s linear;
+    }
+
+    /* for main content padding start after half side nav */
+
+    .intro {
+        padding-left: 70px;
+    }
+
+    /* for rotating sidenav dropdown icons */
+
+    .collapsible li.active .collapsible-header span>i,
+    .collapsible li.active .collapsible-header>i.right {
+        -ms-transform: rotate(180deg);
+        /* IE 9 */
+        -webkit-transform: rotate(180deg);
+        /* Chrome, Safari, Opera */
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+</style>
+<div class="navbar-fixed">
+
+    <!-- top-nav   -->
+    <nav class="sidenav-color">
+            <div class="nav-wrapper">
+                <a href="#" data-activates="mobile-demo" class="button-collapse left" style="padding-left: 10px; margin-left: 0px;"><i class="material-icons">menu</i></a>
+                <ul class="hide-on-large-only center-align" style="margin-left:40%;">
+                             
+                    <li>
+                        <a class="center heading1" style="font-size:120%;"> </a>
+                    </li>
+                  
+                    <!--<li><a id="slide"><i class="medium material-icons ">add</i></a></li>-->
+                </ul>
+                <ul class="hide-on-med-and-down" style="margin-left:48%;">
+                             
+                    <li>
+                        <a class="center heading" style="font-size:120%;"><%-title%></a>
+                    </li>
+                  
+                    <!--<li><a id="slide"><i class="medium material-icons ">add</i></a></li>-->
+                </ul>
+                
+                <ul class="right hide-on-med-and-down">
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </div>
+          </nav>
+   
+
+<!-- side nav for Large device start -->
+<ul id="slide-out" class="side-nav panelSideNav fixed hide-on-med-and-down sidenav-color z-depth-3" style="margin-top:0;">
+    <li style="margin-top:1%;margin-bottom:5%;">
+        <a href="/index" class="left element-sideNav" style="font-size:30px;">Lets Print</a>
+        <a id="slide" href="#" class=""><i class="material-icons small tooltipped" data-position="right" data-delay="50"
+                data-tooltip="Menu">menu</i></a>
+    </li>
+    <li class="no-padding">
+        <ul class="collapsible" data-collapsible="accordion">
+            <li><a href="/bank"><i class="material-icons tooltipped" data-position="right" data-delay="50" data-tooltip="Manage Bank">store_mall_directory</i><span
+                        class="element-sideNav">Manage
+                        Bank</span></a></li>
+
+            <li><a href="/payee"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                        data-tooltip="Manage Payee">supervisor_account</i><span class="element-sideNav">Manage
+                        Payee</span></a></li>
+
+            <li><a href="/manageAccount"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                        data-tooltip="Manage Account">business_center</i><span class="element-sideNav">Manage
+                        Account</span></a></li>
+            <li><a href="/manageCB"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                        data-tooltip="Manage Cheque Book">style</i><span class="element-sideNav">Manage
+                        Cheque Book</span></a></li>
+            <li><a href="/managePrint"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                        data-tooltip="Manage Print">print</i><span class="element-sideNav">Manage
+                        Print</span></a></li>
+             <li><a href="/chqSummaryReport"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                            data-tooltip="Manage Print">assignment</i><span class="element-sideNav">Cheque Reports</span></a></li>            
+             <li><a href="/testPrint"><i class="material-icons tooltipped" data-position="right" data-delay="50"
+                            data-tooltip="Test Print">done_all</i><span class="element-sideNav">Test Print</span></a></li>            
+        </ul>
+    </li>
+</ul>
+<!-- side nav for Large device end -->
+</div>
+<div class="row noMargin">
+    <div class="ajax_loader hiddenAjaxLoader"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+</div>

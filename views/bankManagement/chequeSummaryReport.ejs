@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% include bankCommanComp/header.ejs %>
+    </head>
+
+    <body>
+         <!--navbar start-->
+            <% include bankCommanComp/navbar.ejs %>
+        <!--navbar end-->
+        <main class="paddingBody">
+            <div class="row">
+                <div class="col s6 m3 l3 left-align">
+                            <select id="bankAccountId" class="select2-container-single" name="bankAccountId" required="" aria-required="true">
+                                <option value="0" selected>Select Account Number</option>
+                            </select>
+                        
+                </div>  
+
+                <div class="col s3 m3 l3 push-l2">
+                        <a class="btn" href="/chqPrintedReport">Printed Cheque Report</a>
+                    </div>
+
+                    <div class="col s6 m6 l6 right-align">
+                            <a class="btn" href="/chqCancelledReport">Cancelled Cheque Report</a>
+                        </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Cheque Book Series No.</th>
+                                <th>Total Leaves</th>
+                                <th>Unused Leaves</th>
+                                <th>Printed Leaves</th>
+                                <th>cancel Leaves</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <tr>
+                                <td>1</td>
+                                <td>110810024467</td>
+                                <td>10</td>
+                                <td>2</td>
+                                <td>6</td>
+                                <td>2</td>
+                                
+                            </tr> -->
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </main>
+     
+        
+    </body>
+    <script>
+        $(document).ready(function(){
+    
+             var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "8%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "4%",
+                "targets": 4
+            },
+            {
+                "width": "4%",
+                "targets": 5
+            }
+            ];
+            var tableId = "tblData";
+            var pdfWidth = [20, '*', '*', '*'];
+            getDataTableJson(tableId, columnNo, pdfWidth);
+              $("#bankAccountId").change(function () {
+            var accountId = $("#bankAccountId").val();
+            if (accountId != 0) {
+                hitForTableData(accountId);
+            }
+        });
+    
+        fetchBankAccountListData();
+    })
+     //hit for table data
+     function hitForTableData(accountId) {
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.CHEQUE_SUMMARY_BY_ACCOUNT_ID%>/"+accountId;
+            $.ajax({
+                url: url,
+                type: "GET",
+                // data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        Materialize.Toast.removeAll();
+                        setTableData(data);
+    
+                    } else if (data.success == false) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                    }
+                },
+                error: function (xhr) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    
+        function setTableData(resultData) {
+            // console.log(resultData);
+            var data = resultData.chequeSummaryReport;
+            var t = $('#tblData').DataTable();
+            t.clear().draw();
+            if (data.length == null) {
+                t.row.add('<tr>' +
+                    '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                    '</tr>');
+            } else {
+                // $('#tblData tbody').empty();
+                // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+                for (i = 0; i < data.length; i++) {
+                    var chqBookSeriesNumber = data[i].seriesNo,
+                      totalLeaves = data[i].totalLeaves,
+                        unusedLeave = data[i].unusedLeaves,
+                        printedLeaves = data[i].printedLeaves,
+                        cancelledLeaves = data[i].cancelledLeaves,
+                        cbid = data[i].chequeBookId;
+                        
+                    t.row.add(
+                        [(i + 1),
+                        '<a href="<%= FRONTEND.BASE_URL+BANK_FRONTEND.GET_CHEQUE_DETAIL_REPORT_PAGE_BY_CBID%>/' + cbid + '">' + chqBookSeriesNumber + '</a>',
+                        totalLeaves,
+                        unusedLeave,
+                        printedLeaves,
+                        cancelledLeaves,
+    
+                        ]).draw(false);
+                }
+            }
+        }
+
+          // fetch Bank Account List for Dropdown
+    function fetchBankAccountListData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_ACCOUNT_LIST%>";
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setBankAccountDataForDropDown(data);
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+
+                // w.postMessage({
+                //     cmd: TaskListMessage.LOAD_BRAND,
+                //     data: data
+                // });
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    // sets Bank Account data in drop down
+    function setBankAccountDataForDropDown(bankData) {
+        var data = bankData.bankAccount;
+        $("select#bankAccountId").empty();
+
+        $('<option>', {
+            value: 0,
+            text: "Select Bank Account"
+        }).appendTo("select#bankAccountId");
+
+        for (i = 0; i < data.length; i++) {
+            // for (i = data.length - 1; i >= 0; i--) {
+
+            $('<option>', {
+                value: data[i].id,
+                text: data[i].bank.shortName + "-" + data[i].accountNumber
+            }).appendTo("select#bankAccountId");
+        }
+
+        $("select#bankAccountId").trigger("change");
+    }
+
+    </script>
+     <% include ../commonComponents/footer.ejs %>
+</html>

@@ -1,0 +1,51 @@
+/*For Desktops*/
+
+@media screen and (min-width: 993px) {
+
+    
+
+}
+
+/*For Tablets*/
+
+@media screen and (max-width: 992px) and (min-width: 600px) {
+
+
+
+}
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+	.suppForm {
+		padding: 0 .9rem .9rem .9rem;
+    }
+    
+    
+
+}
+
+/*For Extra Small Mobiles {IPHONE 4}*/
+
+@media only screen and (max-width: 320px) {
+
+
+
+}
+
+.suppInp {
+    margin-bottom: 1.5rem;
+}
+
+.suppForm {
+    padding-bottom: 1.5rem;
+}
+
+
+.selectReq:before {
+    content: "*";
+    position: absolute;
+    top: .8rem;
+    left: 3.3rem;
+    color:red;
+  }

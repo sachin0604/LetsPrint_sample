@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor Sample</title>
+    <script src="../ckeditor.js"></script>
+
+</head>
+
+<body>
+    <form>
+        <textarea id="editor1" rows="10" cols="80">
+                This is my textarea to be replaced with CKEditor.
+            </textarea>
+        <script>
+            // Replace the <textarea id="editor1"> with a CKEditor
+            // instance, using default configuration.
+
+            //CKEDITOR.config.extraPlugins = "base64image";
+            //CKEDITOR.config.extraPlugins = "lineheight";
+            var oldStyleSet = CKEDITOR.stylesSet.get('default');
+            var materializeStyleSetArray = [{
+                name: 'Table style',
+                element: 'table',
+                styles: {
+
+                },
+                attributes: {
+                    'class': 'my_style',
+                    'width': '100%'
+                }
+
+            }, {
+                name: 'Image Style',
+                element: 'img',
+                styles: {
+
+                },
+                attributes: {
+                    class: 'responsive-img'
+                }
+            }];
+            //var newStyleSet = oldStyleSet.concat(materializeStyleSetArray);
+
+            //CKEDITOR.stylesSet.add('materialize_styleset', materializeStyleSetArray);
+            //CKEDITOR.config.stylesSet = 'materialize_styleset';
+            CKEDITOR.replace('editor1');
+        </script>
+    </form>
+
+
+
+</body>
+
+</html>

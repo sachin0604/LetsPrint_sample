@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% include bankCommanComp/header.ejs %>
+    </head>
+
+    <body>
+         <!--navbar start-->
+            <% include bankCommanComp/navbar.ejs %>
+        <!--navbar end-->
+        <main class="paddingBody">
+
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Cheque Issue (Print) Date</th>
+                                <th>Cheque No.</th>
+                                <th>Payee Name</th>
+                                <th>Cheque Amount</th>
+                                <th>Cheque Date</th>
+                                <th>Cheque Status</th>
+                                <th>Remark/Cancel Reason</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </main>
+     
+        
+    </body>
+    <script>
+        $(document).ready(function(){
+    
+             var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "8%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "3%",
+                "targets": 4
+            },
+            {
+                "width": "4%",
+                "targets": 5
+            },
+            {
+                "width": "4%",
+                "targets": 6
+            },
+            {
+                "width": "2%",
+                "targets": 7
+            }
+            ];
+            var tableId = "tblData";
+            var pdfWidth = [20, '*', '*', '*'];
+            getDataTableJson(tableId, columnNo, pdfWidth);
+            var cbid = '<%-JSON.stringify(cbid)%>';
+                hitForTableData(cbid);
+         
+    
+    })
+     //hit for table data
+     function hitForTableData(cbid) {
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.CHEQUE_BOOK_DETAILS_REPORT_BY_CHEQUEBOOK_ID%>/"+cbid;
+            $.ajax({
+                url: url,
+                type: "GET",
+                // data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        Materialize.Toast.removeAll();
+                        setTableData(data);
+    
+                    } else if (data.success == false) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                    }
+                },
+                error: function (xhr) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    
+        function setTableData(resultData) {
+            // console.log(resultData);
+            var data = resultData.chequeBookEntryDetails;
+            var t = $('#tblData').DataTable();
+            t.clear().draw();
+            if (data.length == null) {
+                t.row.add('<tr>' +
+                    '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                    '</tr>');
+            } else {
+                // $('#tblData tbody').empty();
+                // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+                for (i = 0; i < data.length; i++) {
+                    var cancelReasonOrRemarks="";
+                    if(data[i].chequeStatus=="Proceed"){
+                        cancelReasonOrRemarks=data[i].remark;
+                    }else{
+                        cancelReasonOrRemarks=data[i].cancelReason;
+                    }
+                    var chqIssueDate = formatDateTime(data[i].createdAt),
+                      chqNumber = data[i].chequeNumber,
+                        payeeName = data[i].payeeName,
+                        chqAmount = data[i].chequeAmount,
+                        chqDate = formatDateTime(data[i].chequeDate),
+                        chqStatus = data[i].chequeStatus,
+
+                        cancelledReason=cancelReasonOrRemarks
+                        
+                        // if(chqStatus=="Proceed"){
+                        //     cancelledReason = data[i].remark
+                        // }else{
+                        //     cancelledReason = data[i].cancelReason
+                        // }
+                        
+                        
+                    t.row.add(
+                        [(i + 1),
+                        chqIssueDate,
+                        chqNumber,
+                        payeeName,
+                        chqAmount,
+                        chqDate,
+                        chqStatus,
+                        cancelledReason
+                        ]).draw(false);
+                }
+            }
+        }
+
+    // sets Bank Account data in drop down
+   
+    </script>
+     <% include ../commonComponents/footer.ejs %>
+</html>

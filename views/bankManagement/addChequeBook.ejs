@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <% include bankCommanComp/header.ejs %>
+</head>
+
+<body>
+
+    <!--navbar start-->
+    <% include bankCommanComp/navbar.ejs %>
+    <!--navbar end-->
+
+    <main class="paddingBody">
+        <div class="container">
+            <!-- <form onSubmit="return addChequeBook()" method="POST" id="saveChequeBookForm"> -->
+            <div class="row z-depth-3">
+                <div class="col l12 m12 s12">
+                    <h4 class="center"> Add Cheque Book Details </h4>
+                </div>
+
+                <div class="row" style="margin-bottom:5px;">
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1 ">
+                        <i class="material-icons prefix">business_center </i>
+                        <span class="selectLabel"><span class="red-text">*&nbsp;
+                                <select id="bankAccountId" name="bankAccountId" required="" aria-required="true">
+                                    <option value="0" selected>Select Bank Account</option>
+                                </select>
+                    </div>
+
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1 ">
+                        <i class="material-icons prefix">settings_overscan </i>
+                        <span class="selectLabel"><span class="red-text">*&nbsp;
+                                <select id="templateId" name="templateId" required="" aria-required="true">
+                                    <option value="0" selected>Select Design Template</option>
+                                </select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1">
+                        <i class="material-icons prefix">rate_review</i>
+                        <input id="noOfLeaves" type="text" class="validate onlyNumberAllowed" name="noOfLeaves"
+                            maxlength="3" required>
+                        <label for="noOfLeaves" class="active">Enter No of Leaves</label>
+                    </div>
+
+                    <div class="input-field col s12 m5 15 push-l1 push-m1">
+                        <i class="material-icons prefix">date_range</i>
+                        <input type="date" class="datepicker chequeDate " placeholder="Due Date" name="addedDate" id="addedDate">
+                        <label for="addedDate">Added Date <span class="red-text">*</span>
+                        </label>
+                    </div>
+
+
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1">
+                        <i class="material-icons prefix">rate_review</i>
+                        <input id="startingChqNo" type="text" class="validate onlyNumberAllowed" name="startingChqNo"
+                            minlength="6" maxlength="6" required>
+                        <label for="startingChqNo" class="active">Enter Starting Cheque No.</label>
+                    </div>
+
+                    <div class="input-field col s12 m5 l5 push-l1 push-m1">
+                        <i class="material-icons prefix"> rate_review</i>
+                        <input id="endChequeNo" type="text" class="validate onlyNumberAllowed" name="endChequeNo"
+                            minlength="6" maxlength="6" readonly required>
+                        <label for="endChequeNo" class="active">End Cheque No.</label>
+                    </div>
+                </div>
+                <br>
+
+                <div class="input-field col s12 m6 l6 offset-l3  offset-m3 center-align">
+                    <button class="btn waves-effect waves-light blue-gradient" onclick="addChequeBook()" id="saveChequeBookSubmit">Add
+                        Cheque Book<i class="material-icons right">send</i> </button>
+                    <br><br>
+                </div>
+            </div>
+            <!-- </form> -->
+        </div>
+    </main>
+
+    <script>
+        $(document).ready(function () {
+            fetchBankAccountData();
+
+            $('#bankAccountId').change(function () {
+                // $(this).val() will work here
+                fetchChequeTemplateDataByBankId();
+            });
+
+            //only number allowed without decimal
+            $('.onlyNumberAllowed').keypress(function (event) {
+                var key = event.which;
+                if (!(key >= 48 && key <= 57))
+                    event.preventDefault();
+            });
+
+            //on  blur of number of leaves calculate the end cheque No
+            $('#noOfLeaves').on('blur', function () {
+                $("#endChequeNo").val("");
+                var startChqNo = $("#startingChqNo").val();
+                var noOfLeaves = $("#noOfLeaves").val();
+                if (noOfLeaves == "") {
+                    noOfLeaves = 0;
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(" Please Enter No of Leaves", '2000', 'red lighten-2');
+                    return false
+                } else {
+                    noOfLeaves = parseFloat(noOfLeaves);
+                }
+                if (startChqNo != "") {
+                    startChqNo = parseFloat(startChqNo);
+                    var lastChequeNo = startChqNo + noOfLeaves - 1;
+                    if (lastChequeNo > 999999) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(" Inavalid Start Cheque Number", '2000', 'red lighten-2');
+                        return false;
+                    }
+
+
+                    var lastchqNoString = lastChequeNo.toString();
+
+                    while (lastchqNoString.length != 6) {
+                        lastchqNoString = "0" + lastchqNoString;
+                    }
+
+                    $("#endChequeNo").val(lastchqNoString);
+
+                } else {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Enter Start Cheque Number', '2000', 'red lighten-2');
+                }
+            });
+
+            // on blur of start cheque number
+            $('#startingChqNo').on('blur', function () {
+                var startChqNo = parseFloat($("#noOfLeaves").val().trim());
+                if (startChqNo = "") {
+                    $('#msgEndChqValidation').html("Please Enter Start Cheque No)");
+                    return false;
+                }
+            });
+
+            //  on blur of start cheque no  and  calculate and validating end Cheque No
+            $('#startingChqNo').on('blur', function () {
+                $("#endChequeNo").val("");
+                var startChqNo = $("#startingChqNo").val();
+                var noOfLeaves = $("#noOfLeaves").val();
+                if (startChqNo == "") {
+                    return false;
+                }
+                if (startChqNo.length != 6) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(" Inavalid start cheque number", '2000', 'red lighten-2');
+                    return false;
+                }
+                if (noOfLeaves != "") {
+                    startChqNo = parseFloat(startChqNo);
+                    noOfLeaves = parseFloat(noOfLeaves);
+                    var lastChequeNo = startChqNo + noOfLeaves - 1;
+
+                    if (lastChequeNo > 999999) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(
+                            " Inavalid Data(Please Check Start cheque No or No of leaves)", '2000',
+                            'red lighten-2');
+                    } else {
+
+                        var lastchqNoString = lastChequeNo.toString();
+                        
+                        //managing cheque number length
+                        while (lastchqNoString.toString().length != 6) {
+                            lastchqNoString = "0" + lastchqNoString;
+                        }
+
+                        $("#endChequeNo").val(lastchqNoString);
+                    }
+
+                } else {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Enter no of leaves', '2000', 'red lighten-2');
+                }
+
+
+            });
+
+        });
+        // fetch Bank Account List for Dropdown
+        function fetchBankAccountData() {
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_ACCOUNT_LIST%>";
+            $.ajax({
+                url: url,
+                type: "GET",
+                // data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        Materialize.Toast.removeAll();
+                        setBankAccountDataForDropDown(data);
+
+                    } else if (data.success == false) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                    }
+
+                    // w.postMessage({
+                    //     cmd: TaskListMessage.LOAD_BRAND,
+                    //     data: data
+                    // });
+                },
+                error: function (xhr) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+
+
+        // sets Bank Account data in drop down
+        function setBankAccountDataForDropDown(bankData) {
+            var data = bankData.bankAccount;
+            $("select#bankAccountId").empty();
+
+            $('<option>', {
+                value: 0,
+                text: "Select Bank Account"
+            }).appendTo("select#bankAccountId");
+
+            for (i = 0; i < data.length; i++) {
+                // for (i = data.length - 1; i >= 0; i--) {
+
+                $('<option>', {
+                    value: data[i].id + "-" + data[i].bankId,
+                    text: data[i].bank.shortName + "-" + data[i].accountNumber
+                }).appendTo("select#bankAccountId");
+            }
+
+            $("select#bankAccountId").trigger("change");
+        }
+
+
+        // set dropdown for Template
+
+        function fetchChequeTemplateDataByBankId() {
+            var bankAccountId = $("#bankAccountId").val();
+
+            //var bankAccountId=1;
+            if (bankAccountId == 0) {
+                //if bank account is not selecteds
+
+            } else {
+
+                var bankId = bankAccountId.split("-")[1]; //store bankAccountId and bankId as (1-2) where 1 is bankAccountId and 2 is bankId
+                // var bankId=1;
+
+                var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_CB_TEMPLATE_BY_BANK_ID%>/" + bankId;
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    // data: data,
+                    // contentType: 'application/json,charset=utf-8',
+                    beforeSend: function () {
+                        $(".hiddenAjaxLoader").show();
+                    },
+                    complete: function () {
+                        $(".hiddenAjaxLoader").hide();
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success == true) {
+                            Materialize.Toast.removeAll();
+                            setTemplateDataForDropDown(data);
+
+                        } else if (data.success == false) {
+                            Materialize.Toast.removeAll();
+                            Materialize.toast(data.msg, 3000, 'toastError');
+                        }
+
+                        // w.postMessage({
+                        //     cmd: TaskListMessage.LOAD_BRAND,
+                        //     data: data
+                        // });
+                    },
+                    error: function (xhr) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                        $(".hiddenAjaxLoader").hide();
+                        $("body").css({
+                            "overflow": "show"
+                        });
+                    }
+                });
+
+
+            }
+
+
+        }
+
+
+        // sets Bank data in drop down
+        function setTemplateDataForDropDown(templateData) {
+            var data = templateData.chqTemplate;
+
+            $("select#templateId").empty();
+
+            $('<option>', {
+                value: 0,
+                text: "Select Template Design"
+            }).appendTo("select#templateId");
+
+            for (i = 0; i < data.length; i++) {
+                // for (i = data.length - 1; i >= 0; i--) {
+
+                $('<option>', {
+                    value: data[i].id,
+                    text: data[i].templateName
+                }).appendTo("select#templateId");
+            }
+
+            $("select#templateId").trigger("change");
+        }
+    </script>
+
+    <% include   ../javascriptFiles/chequeBook.ejs%>
+    <% include ../commonComponents/footer.ejs %>
+
+</body>
+
+</html>

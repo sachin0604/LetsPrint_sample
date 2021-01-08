@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <% include bankCommanComp/header.ejs %>
+    </head>
+    <body>  
+         <!--navbar start-->
+        <% include bankCommanComp/navbar.ejs %>
+    <!--navbar end-->
+    <main class="paddingBody">
+            <div class="row">
+                <div class="col s3 m3 l3">
+                    <a class="btn" href="/addChqTemplate">Add New Template</a>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Cheque Design Identifier</th>
+                                <th>Bank Name</th>
+                                <th>Added Date</th>
+                                <th>Update Date</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>110810024467</td>
+                                <td>Sachin</td>
+                                <td>439090</td>
+                                <td>123421</td>
+                                <td>123421</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </main>
+
+        <% include ../javascriptFiles/chequeTemplate.ejs %>
+        <% include ../commonComponents/footer.ejs %>
+    </body>
+</html>

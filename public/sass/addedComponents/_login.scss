@@ -1,0 +1,130 @@
+%buttonBackground {
+    border-radius: 10px;
+    background: #2980b9;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, rgba(41, 128, 185, 0.5), rgba(44, 62, 80, 0.5));
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, rgba(41, 128, 185, 0.5), rgba(44, 62, 80, 0.5));
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.parent {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .loginHeading {
+        height: 100vh;
+        justify-content: center;
+    }
+    .signup,
+    .login {
+        background: url("../images/makeup1.jpg");
+        background-size: cover;
+        height: 100%;
+        width: 50%; // border-color: black;
+        // border-width: 50px;
+        /* for center align the content in flex*/
+        justify-content: center;
+    }
+    .signup {
+        -webkit-transition: width 1s, border-right 1s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 1s, border-right 1s; //transition: transform 3s;
+    }
+    .login {
+        background: url("../images/makeup2.jpg");
+        background-size: cover;
+        -webkit-transition: width 1s, border-left 1s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 1s, border-left 1s;
+    }
+    .pageTitles {
+        @extend %buttonBackground;
+        @extend %cursorCss;
+        width: 300px;
+    }
+    .btn {
+        @extend %buttonBackground;
+        @extend %cursorCss;
+    }
+    input:not([type]),
+    input[type=text]:not(.browser-default),
+    input[type=password]:not(.browser-default),
+    input[type=email]:not(.browser-default),
+    input[type=url]:not(.browser-default),
+    input[type=time]:not(.browser-default),
+    input[type=date]:not(.browser-default),
+    input[type=datetime]:not(.browser-default),
+    input[type=datetime-local]:not(.browser-default),
+    input[type=tel]:not(.browser-default),
+    input[type=number]:not(.browser-default),
+    input[type=search]:not(.browser-default),
+    textarea.materialize-textarea {
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        border: none !important;
+    }
+}
+
+// .login:hover{
+//     width:60%;
+//     border-top-left-radius:3%;
+//     border-bottom-left-radius: 3%;
+// }
+// .signup:hover{
+//     width:60%;
+//     //border-right:50%;
+//     border-top-right-radius:10%;
+//     border-bottom-right-radius: 10%;
+// }
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+.parent {
+    flex-direction: column;
+    .loginHeading {
+        height: 100vw;
+        justify-content: center;
+    }
+
+    .signup,
+    .login {
+        background: url("../images/makeup1.jpg");
+        background-size: cover;
+        height: 50%;
+        width: 100%; // border-color: black;
+        // border-width: 50px;
+        /* for center align the content in flex*/
+        justify-content: center;
+    }
+
+    .signup {
+        -webkit-transition: height 1s, border-bottom 1s;
+        /* For Safari 3.1 to 6.0 */
+        transition: height 1s, border-bottom 1s; //transition: transform 3s;
+    }
+
+    .login {
+        background: url("../images/makeup2.jpg");
+        background-size: cover;
+        -webkit-transition: height 1s, border-bottom 1s;
+        /* For Safari 3.1 to 6.0 */
+        transition: height 1s, border-bottom 1s;
+    }
+
+    .pageTitles {
+        position: relative;
+        bottom: 1.5rem;
+        width: 15rem;
+        transition: bottom 1s;
+    }
+
+    .formContent {
+        margin-right: .77rem ;
+        margin-left: .3rem ;
+        // width: 98%; 
+    }
+
+}
+
+}

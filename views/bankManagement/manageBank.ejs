@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<% include bankCommanComp/header.ejs %>
+
+
+<style>
+        @media screen and (max-width: 992px) {
+            .topmarginForSmall {
+                margin-top: 15px;
+                float: left !important;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <% include bankCommanComp/navbar.ejs %>
+    <main class="paddingBody">
+        <div class="row">
+            <div class="col s12 m12 l12">
+
+                <form id="saveBankNameForm">
+                    <input type="hidden" id="bankId" name="bankId" value="0">
+                    <div class="input-field col s2 m2 l3">
+                        <input type="text" id="bankname" name="bankId" value="" placeholder="Enter Bank Name" required>
+                        <label for="bankname">Enter Bank Name</label>
+                    </div>
+                    <!-- <div class="input-field col s2 m2 l3">
+                            <input id="name" type="text" class="validate" name="name" required>
+                            <label for="name" class="active"><span class="red-text">*&nbsp;</span>Account Holder Name</label>
+    
+                        </div> -->
+                    <div class="input-field col s2 m2 l3">
+                        <input type="text" id="bankshortname" name="bankshortname" value="" placeholder="Enter Short Name" required>
+                        <label for="bankshortname"> Enter Bank short Name</label>
+                    </div>
+                    <div class="input-field col s4 l3 m4 btnmarginInform center addBank" style="width:180px">
+                        <button id="saveBankSubmit" onclick="addBank();" class="btn waves-effect waves-light blue-gradient"
+                            type="button" name="action"><i class="material-icons left">add</i>Add</button>
+                    </div>
+                    <div class="input-field col s6 l2 m3 btnmarginInform center editBank" style="width:150px">
+                        <button id="editBank" onclick="submitEditedData();" class="btn waves-effect waves-light blue-gradient" type="button" name="action"><i class="material-icons left" >send</i>update</button>
+                    </div>
+             
+                    <div class="input-field col s3 l3 m3 btnmarginInform center" style="width:210px">
+                        <button id="resetBankSubmit" class="btn waves-effect waves-light resetBtnColor" type="button"
+                            name="action"><i class="left material-icons">refresh</i>Reset</button>
+                    </div>
+                </form>
+
+            </div>
+            </div>
+         
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="print-col">Sr.No</th>
+                                <th class="print-col">Bank Name</th>
+                                <th class="print-col">Bank Short Name</th>
+                                <th class="print-col">Added Date</th>
+                                <th class="print-col">Updated Date</th>
+                                <th class="">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+    </main>
+
+  
+    <% include ../javascriptFiles/bank.ejs %>
+    <% include ../commonComponents/footer.ejs %>
+  
+</body>
+</html>

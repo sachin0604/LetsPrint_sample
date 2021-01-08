@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<% include bankCommanComp/header.ejs %>
+
+
+<style>
+        @media screen and (max-width: 992px) {
+            .topmarginForSmall {
+                margin-top: 15px;
+                float: left !important;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <% include bankCommanComp/navbar.ejs %>
+    <main class="paddingBody">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                    <div class="col s10 l3 m2 left">        
+                            <a class="btn waves-effect waves-light blue-gradient" href="/addAccount"><i class="material-icons left" >add</i>Add New Account</a>
+                        </div>
+            </div>
+            <br>
+            <br>
+
+            <div class="row">
+                <div class="col s12 m12 l12">
+                    <table class="striped highlighted centred" id="tblData" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="print-col">Sr.No</th>
+                                <th class="print-col">Account Holder Name</th>
+                                <th class="print-col">Account No</th>
+                                <th class="print-col">Minimum Balance</th>
+                                <th class="print-col">Ifsc Code</th>
+                                <th class="print-col">Branch</th>
+                                <th class="print-col">Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                               <td>1</td>
+                               <td>SAchin</td>
+                               <td>110810024467</td>
+                               <td>1000</td>
+                               <td>13usd</td>
+                               <td>Bhayander</td>
+                               <td>1</td>
+                           </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+    </main>
+
+  
+    <% include ../javascriptFiles/account.ejs %>
+    <% include ../commonComponents/footer.ejs %>
+    
+</body>
+</html>

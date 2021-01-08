@@ -1,0 +1,290 @@
+<script>
+    var bankAlreadyExists, e_name, e_shortName, e_id, e_isActive;
+
+    
+    $(document).ready(function () {
+        $(".editBank").hide();
+        var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "12%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "4%",
+                "targets": 4
+            },
+            {
+                "width": "2%",
+                "targets": 5
+            }
+        ];
+        var tableId = "tblData";
+        var pdfWidth = [20, '*', '*', '*'];
+        getDataTableJson(tableId, columnNo, pdfWidth);
+
+        $("#resetBankSubmit").click(function () {
+            $("#bankname").val("");
+            $("#bankshortname").val("");
+            //brandAlreadyExists == false;
+            $(".addBank").show();
+            $(".editBank").hide();
+        });
+        hitForTableData();
+    });
+
+    //function to set req option for save bank and hit the frontend api
+    function addBank() {
+        $('#saveBankSubmit').attr('disabled', true);
+        var bankName = $("#bankname").val().trim();
+        var shortName = $("#bankshortname").val().trim();
+        if (bankname == "") {
+            $('#saveBankSubmit').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please enter brand name', '3000', 'toastError');
+            return false;
+        } else {
+            ////Materialize.Toast.removeAll();
+            // checkForSpecialCharacters(bankname);
+            var data = {
+                name: bankName,
+                shortName: shortName
+            }
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.ADD_BANK%>";
+            //var url = "<%= BACKEND.BASE_URL+BANK_BACKEND.ADD_BANK%>";
+
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                // beforeSend: function () {
+                //     $(".hiddenAjaxLoader").show();
+                // },
+                // complete: function () {
+                //     $(".hiddenAjaxLoader").hide();
+                // },
+                dataType: 'json',
+                success: function (data) {
+
+                    // if (data != null) {
+                    //     window.location.href = "/admin"
+                    // }
+                    if (data.success == true) {
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMg');
+                        $('#saveBankSubmit').attr('disabled', false);
+                        $("#bankname").val("");
+                        $("#bankshortname").val("");
+
+                        // window.location.href = "/bank";
+                        hitForTableData();
+                    } else if (data.success == false) {
+                        $('#saveBankSubmit').attr('disabled', false);
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#saveBankSubmit').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+
+
+    function checkForSpecialCharacters(str) {
+        var patternMatch = /[!,@,#,,%,^,&,*,(,),_,-,+,=,/,?,]/g;
+        var result = str.match(patternMatch);
+        if (result != null) {
+            Materialize.Toast.removeAll();
+            Materialize.toast("Special characters not allowed", 3000);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //function to set the table data
+    function setTableData(resultData) {
+        console.log(resultData);
+        var data = resultData.bank;
+        var t = $('#tblData').DataTable();
+        t.clear().draw();
+        if (data.length == null) {
+            t.row.add('<tr>' +
+                '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                '</tr>');
+        } else {
+            // $('#tblData tbody').empty();
+            // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+            for (i = 0; i < data.length; i++) {
+                var addedDate = formatDateTime(data[i].createdAt),
+                    updateDate = formatDateTime(data[i].updatedAt),
+                    bankName = data[i].bankName,
+                    bankId = data[i].id,
+                    shortName = data[i].shortName;
+                userId = data[i].userId;
+                if (userId == -1) {
+                    t.row.add(
+                        [(i + 1),
+                            bankName,
+                            shortName,
+                            addedDate,
+                            updateDate,
+                            ''
+                        ]).draw(false);
+                } else {
+                    t.row.add(
+                        [(i + 1),
+                            bankName,
+                            shortName,
+                            addedDate,
+                            updateDate,
+                            '<button onclick="editRow(this)" class="btn-flat bankedit disabled" data-name="' +
+                            bankName +
+                            '" data-short-name="' + shortName + '" data-bankId="' + bankId +
+                            '"> <i class="material-icons tooltipped" data-position="left" data-delay="50" data-tooltip="Edit" >edit</i></button>'
+                        ]).draw(false);
+                }
+
+            }
+        }
+    }
+
+    //on click of edit button this function is call
+    function editRow(data) {
+
+        e_name = $(data).attr("data-name"),
+            e_shortName = $(data).attr("data-short-name"),
+            e_id = $(data).attr("data-bankId"),
+            $("#bankname").val(e_name);
+        $("#bankshortname").val(e_shortName);
+        $("#bankname").attr("data-bankId", e_id);
+        $(".addBank").hide();
+        $(".editBank").show();
+
+    }
+
+    //hit frontend api for table data
+    function hitForTableData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_BANK_LIST%>";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setTableData(data);
+                    $("#bankName").val("");
+                    $("#bankshortname").val("");
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    //set req option  for update and call frontend api
+    function submitEditedData() {
+        $('#editBank').attr('disabled', true);
+        e_name = $("#bankname").val().trim();
+        e_shortName = $("#bankshortname").val().trim();
+        if (e_name == "" || e_shortName == "") {
+            $('#editBank').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please enter Bank name Or Short Name', '3000', 'toastError');
+            return false;
+        } else {
+            Materialize.Toast.removeAll();
+            checkForSpecialCharacters(e_name);
+            var data = {
+                name: e_name,
+                shortName: e_shortName,
+                bankId: e_id,
+                //isActive: e_isActive
+            }
+
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.UPDATE_BANK%>";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        console.log(data);
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMsg');
+                        $("#bankname").val("");
+                        $("#bankshortname").val("");
+                        // window.location.href = "/admin/brand"
+                        $('#editBank').attr('disabled', false);
+                        hitForTableData();
+                    } else if (data.success == false) {
+                        $('#editBank').attr('disabled', false);
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#editBank').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+</script>

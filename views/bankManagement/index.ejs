@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <% include bankCommanComp/header.ejs %>
+
+
+
+    <style>
+        .card-content {
+            height: 115px !important;
+        }
+
+        /* for cards color */
+        .redcard {
+            background-color: #f56954 !important;
+        }
+
+        .greencard {
+            background-color: #00a65a !important;
+        }
+
+        .tealLightenone {
+            background-color: #26a69a !important;
+        }
+
+        .bluecard {
+            background-color: #0073b7 !important;
+        }
+
+        /* for icon color */
+        .greenIcon {
+            color: #009551 !important;
+        }
+
+        .blueIcon {
+            color: #0067a4 !important;
+        }
+
+        .redIcon {
+
+            color: #dc5e4b !important;
+        }
+
+        .countParent {
+            font-size: 25px;
+            font-weight: 400;
+        }
+
+        .card .card-content {
+            padding: 20px;
+            padding-right: 2px;
+            border-radius: 0 0 2px 2px;
+        }
+
+        .preloader-background {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--navbar start-->
+    <% include bankCommanComp/navbar.ejs %>
+    <!--navbar end-->
+
+    <main class="paddingBody">
+        <div class="row">
+
+            <div class="col s12 m3 l3">
+                <div class="card  redcard">
+                    <div class="card-content white-text">
+                        <div class="right">
+                            <span><i class="medium material-icons redIcon">print</i></span>
+                        </div>
+                        <span class="countParent"><span id="totalPrintAllowed" class="count"></span></span>
+                        <br />
+
+                        <span class="center">Total Print Allowed</span>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col s12 m3 l3">
+                <div class="card  greencard">
+                    <div class="card-content white-text">
+                        <div class="right">
+                            <span><i class="medium material-icons greenIcon">print</i></span>
+                        </div>
+                        <span class="countParent"><span id="totalPrintDone" class="count"></span></span>
+                        <br />
+
+                        <span class="center">Total Print Done</span>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col s12 m3 l3">
+                <div class="card  tealLightenone">
+                    <div class="card-content white-text">
+                        <div class="right">
+                            <span><i class="medium material-icons teal-text">event_available</i></span>
+                        </div>
+                        <span class="countParent">&nbsp;<span id="activationDate" class="count"></span></span>
+                        <br />
+
+                        <span class="center">Plan Activate Date</span>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col s12 m3 l3">
+                <div class="card  bluecard">
+                    <div class="card-content white-text">
+                        <div class="right">
+                            <span><i class="medium material-icons blueIcon">event_busy</i></span>
+                        </div>
+                        <span class="countParent">&nbsp;<span id="expireDate" class="count"></span></span>
+                        <br />
+
+                        <span class="center">Plan Expire on</span>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+</body>
+
+<script>
+    $(document).ready(function () {
+
+       // var userId = 6;
+       
+        fetchUserDetailsByUserId();
+
+    });
+
+    function fetchUserDetailsByUserId() {
+
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_USER_PLAN_BY_USER_ID%>";
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                if (data.success == true) {
+                    var userPlan = data.userPlan;
+
+                    //var dateData = moment(userPlan.activationDate);
+
+                    var activationDate = moment(userPlan.activationDate).format("DD/MM/YYYY");
+                    var planEndDate = moment(userPlan.planEndDate).format("DD/MM/YYYY");
+
+                    $('#totalPrintAllowed').text(userPlan.noOfPrintAllowed);
+                    $('#totalPrintDone').text(userPlan.noOfPrintDoneCurrently);
+                    $('#activationDate').text(activationDate);
+                    $('#expireDate').text(planEndDate);
+
+
+                } else {
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+
+        })
+    }
+</script>
+
+</html>

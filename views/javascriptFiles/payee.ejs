@@ -1,0 +1,277 @@
+<script>
+    var payeeAlreadyExists, e_name, e_address, e_id, e_isActive;
+
+
+    $(document).ready(function () {
+        $(".editPayee").hide();
+        var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "12%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "4%",
+                "targets": 4
+            },
+            {
+                "width": "2%",
+                "targets": 5
+            }
+        ];
+        var tableId = "tblData";
+        var pdfWidth = [20, '*', '*', '*', '*'];
+        getDataTableJson(tableId, columnNo, pdfWidth);
+        $("#resetPayeeSubmit").click(function () {
+            $("#payeeName").val("");
+            $("#payeeAddress").val("");
+            payeeAlreadyExists == false;
+            $(".addPayee").show();
+            $(".editPayee").hide();
+        });
+        hitForTableData();
+    });
+
+
+    // set req option for save payee details and hit frontend api
+    function addPayee() {
+        $('#savePayeeSubmit').attr('disabled', true);
+        var payeeName = $("#payeeName").val().trim();
+        var payeeAddress = $("#payeeAddress").val().trim();
+        if (payeeName == "") {
+            $('#savePayeeSubmit').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please enter Payee name', '3000', 'toastError');
+            return false;
+        } else {
+            Materialize.Toast.removeAll();
+            // checkForSpecialCharacters(bankname);
+            var data = {
+                payeeName: payeeName,
+                payeeAddress: payeeAddress
+            }
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.ADD_PAYEE%>";
+
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                // beforeSend: function () {
+                //     $(".hiddenAjaxLoader").show();
+                // },
+                // complete: function () {
+                //     $(".hiddenAjaxLoader").hide();
+                // },
+                dataType: 'json',
+                success: function (data) {
+
+                    // if (data != null) {
+                    //     window.location.href = "/admin"
+                    // }
+                    if (data.success == true) {
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMg');
+                        $('#savePayeeSubmit').attr('disabled', false);
+                        $("#payeeName").val("");
+                        $("#payeeAddress").val("");
+
+                        // window.location.href = "/bank";
+                        hitForTableData();
+                    } else if (data.success == false) {
+                        $('#savePayeeSubmit').attr('disabled', false);
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#savePayeeSubmit').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+
+
+    function checkForSpecialCharacters(str) {
+        var patternMatch = /[!,@,#,,%,^,&,*,(,),_,-,+,=,/,?,]/g;
+        var result = str.match(patternMatch);
+        if (result != null) {
+            Materialize.Toast.removeAll();
+            Materialize.toast("Special characters not allowed", 3000, );
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //set table data 
+    function setTableData(resultData) {
+        console.log(resultData);
+        var data = resultData.bankPayee;
+        var t = $('#tblData').DataTable();
+        t.clear().draw();
+        if (data.length == null) {
+            t.row.add('<tr>' +
+                '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                '</tr>');
+        } else {
+            // $('#tblData tbody').empty();
+            // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+            for (i = 0; i < data.length; i++) {
+                var addedDate = formatDateTime(data[i].createdAt),
+                    updateDate = formatDateTime(data[i].updatedAt),
+                    payeeName = data[i].payeeName,
+                    payeeId = data[i].id,
+                    payeeAddress = data[i].payeeAddress;
+                t.row.add(
+                    [(i + 1),
+                        payeeName,
+                        payeeAddress,
+                        addedDate,
+                        updateDate,
+                        '<button onclick="editRow(this)" class="btn-flat payeeedit" data-name="' + payeeName +
+                        '" data-address="' + payeeAddress + '" data-payeeId="' + payeeId +
+                        '"> <i class="material-icons tooltipped" data-position="left" data-delay="50" data-tooltip="Edit" >edit</i></button>'
+                    ]).draw(false);
+            }
+        }
+    }
+
+    //hit for table data 
+    function hitForTableData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_PAYEE_LIST%>";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setTableData(data);
+                    $("#payeeName").val("");
+                    $("#payeeAddress").val("");
+
+                    $(".editPayee").hide();
+                    $(".addPayee").show();
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+    // on click of edit button
+    function editRow(data) {
+
+        e_name = $(data).attr("data-name"),
+            e_address = $(data).attr("data-address"),
+            e_id = $(data).attr("data-payeeId"),
+            $("#payeeName").val(e_name);
+        $("#payeeAddress").val(e_address);
+        $("#payeeName").attr("data-payeeId", e_id);
+        $(".addPayee").hide();
+        $(".editPayee").show();
+    }
+
+    //set the req option for update payee and hit frontend api
+    function submitEditedData() {
+        $('#editPayee').attr('disabled', true);
+        e_name = $("#payeeName").val().trim();
+        e_address = $("#payeeAddress").val().trim();
+        if (e_name == "" || e_address == "") {
+            $('#editPayee').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please enter Payee and Payee Adress', '3000', 'toastError');
+            return false;
+        } else {
+            Materialize.Toast.removeAll();
+            checkForSpecialCharacters(e_name);
+            var data = {
+                payeeName: e_name,
+                payeeAddress: e_address,
+                payeeId: e_id,
+                //isActive: e_isActive
+            }
+
+            // links in app.js in app.locals
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.UPDATE_PAYEE%>";
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                beforeSend: function () {
+                    $(".hiddenAjaxLoader").show();
+                },
+                complete: function () {
+                    $(".hiddenAjaxLoader").hide();
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success == true) {
+                        console.log(data);
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMsg');
+                        $("#payeeName").val("");
+                        $("#payeeAddress").val("");
+                        // window.location.href = "/admin/brand"
+                        $('#editPayee').attr('disabled', false);
+                        hitForTableData();
+                    } else if (data.success == false) {
+                        $('#editPayee').attr('disabled', false);
+                        Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#editPayee').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+        }
+    }
+</script>

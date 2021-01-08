@@ -1,0 +1,157 @@
+/*For Desktops*/
+
+@media screen and (min-width: 993px) {
+
+    .multiOrderBtn {
+        margin-left: -2.5rem !important;
+        div:nth-child(2) {
+            margin-left: -.7rem !important;
+        }
+    }
+
+    
+    
+    .orderInfoBtn {
+        
+        div:first-child {
+            
+            margin-right: -5rem !important;
+        }
+    }
+
+    .singleOrderBtn {
+        // margin-left: -2.5rem !important;
+        div:first-child {
+            position: absolute;
+            top: 25.6rem;
+            left: 2rem !important;
+        }
+
+        div:nth-child(2) {
+            position: absolute;
+            top: 25.6rem;
+            left:20rem !important;
+            // margin-left: -4.5rem !important;
+        }
+
+        div:nth-child(3) {
+            top: 25.6rem;
+            position: absolute;
+            left: 25rem !important  ;
+        }
+    }
+
+    .invRepBtn {
+        position: relative;
+
+            left: -3rem !important;
+    }
+
+}
+
+/*For Tablets*/
+
+@media screen and (max-width: 992px) and (min-width: 600px) {
+
+
+
+}
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+    .inventoryTopBtns {
+        .btn {
+            width: 11.5rem !important;
+        }
+        .mobSpacing {
+            height: 1rem !important;
+        }
+    }
+
+    #addOrderProduct {
+        margin-bottom: 1rem !important;
+        margin-left: 5rem !important;
+    }
+
+    .multiOrderBtn {
+        div:first-child {
+            position: absolute;
+            top: 51rem;
+            right: 7rem !important;
+            // margin-left: -3.5rem !important;
+        }
+
+        div:nth-child(2) {
+            position: absolute;
+            top:51rem;
+            right: 1.3rem !important;
+        }
+
+        div:nth-child(4) {
+            position: absolute;
+            top: 48rem;
+            left: 1rem !important;
+            .btn {
+                width: 16rem;
+            }
+        }
+        
+        div:nth-child(2), div:nth-child(3) {
+            margin-left: -1.3rem !important;
+        }
+    }
+
+    .multiInventBtn {
+        button:last-child {
+            margin-top: 1rem;
+        }
+    }
+
+    .invRepBtn {
+        div:nth-child(2) {
+            margin-left: .7rem !important;
+        }
+
+        div:nth-child(3) {
+            margin-left: .7rem !important;
+        }
+    }
+    
+    .smsModal {
+        div:nth-child(2) {
+            margin-left: 1.2rem !important;
+            margin-right: -3rem !important;
+        }
+    }
+
+}
+
+/*For Extra Small Mobiles {IPHONE 4}*/
+
+@media only screen and (max-width: 320px) {
+
+
+
+}
+
+.modalCloseBtn {
+    position: absolute;
+    top: .5rem;
+    right: 0!important;
+}
+
+.closeBtn2 {
+    position: absolute;
+    top: .5rem;
+    right: .5rem !important;
+}
+
+.modal {
+    .select2 {
+        width: 100% !important;
+        float:right;
+        height:3rem !important;
+        
+    }
+}

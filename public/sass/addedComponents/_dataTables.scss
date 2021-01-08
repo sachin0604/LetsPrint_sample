@@ -1,0 +1,425 @@
+.scrollDivTable {
+    width: 100%;
+    overflow-x: auto;
+    position: relative;
+}
+
+div.dt-buttons {
+    width: 100%;
+}
+
+.pdfButton,
+.excelButton,
+.printButton,
+.pageLengthButton,
+.colvisButton {
+    background-image: linear-gradient(to bottom, transparent 0%, transparent 100%) !important;
+    z-index: 1;
+    border: none !important;
+    padding: 0.3em 1em !important;
+    display: inline-block !important;
+    height: 28px !important;
+    font-size: 14px !important;
+    margin-bottom: 15px;
+}
+
+.colvisButton {
+    font-size: 12px !important;
+    padding: 0.3em 0.3em !important;
+}
+
+/*for pdf,excel buttons text and icons font-size*/
+.dt-buttons span i,
+.dt-buttons span {
+    font-size: 12px !important;
+}
+
+/*css for length (display records) start*/
+
+.dataTables_length label {
+    float: left;
+    top: 15px;
+    color: #424242 !important;
+    max-width: 100px;
+}
+
+.dataTables_length div.select-wrapper {
+    margin-left: 5px;
+    position: relative;
+    display: inline-block;
+    width: 50%;
+}
+
+.dataTables_length .select-wrapper ul {
+    min-width: 50px;
+}
+
+.dataTables_length .select-wrapper input.select-dropdown {
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border: 1px solid #9e9e9e;
+    border-radius: 2px !important;
+    outline: none;
+    height: 2rem;
+    line-height: 1rem;
+    font-size: 1rem;
+    margin: 0 0 0 0;
+    padding: 0;
+    display: inline;
+}
+
+/*css for length (display records) end*/
+
+/* css for filter start */
+.dataTables_filter label {
+    float: right;
+    position: initial !important;
+    top: 15px;
+    display: inline-block !important;
+    color: #757575 !important;
+}
+
+div.dataTables_filter input {
+    /* margin-left:5px; */
+    position: relative;
+    display: inline-block;
+    width: 100% !important;
+    margin-left: 0 !important;
+    border: 1px solid #9e9e9e !important;
+    border-bottom: 1px solid #9e9e9e !important;
+    border-radius: 6px !important;
+    color: black;
+
+    /* padding-bottom:1%; */
+}
+
+div.dataTables_filter input::-webkit-input-placeholder,
+div.dataTables_filter input::-moz-placeholder,
+div.dataTables_filter input:-ms-input-placeholder,
+div.dataTables_filter input:-moz-placeholder {
+    font-family: FontAwesome !important;
+    content: "&#xf075;" !important;
+    padding-top: 0;
+    display: block;
+    text-align: center;
+}
+
+/* for hidding search icon */
+div.dataTables_filter::after {
+    font-family: "FontAwesome";
+    content: "\f002";
+    padding: 4px;
+    padding-top: 0;
+    display: none;
+}
+
+@media screen and (max-width: 640px) {
+    .dataTables_wrapper .dataTables_filter {
+        margin-top: 0 !important;
+    }
+
+    .pdfButton,
+    .excelButton,
+    .printButton,
+    .pageLengthButton,
+    .colvisButton {
+        margin-bottom: 0;
+        margin-top: 10px;
+    }
+    .colvisButton {
+        margin-bottom: 15px;
+    }
+}
+
+/* css for filter end */
+
+/* css for dataTable paginate button start */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 5px !important;
+    font-size: 13px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: #333 !important;
+    border: 1px solid #9e9e9e;
+    background-color: white;
+
+    /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #dcdcdc));
+    background: -webkit-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+    background: -moz-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+    background: -ms-linear-gradient(top, #fff 0%, #dcdcdc 100%);
+    background: -o-linear-gradient(top, #fff 0%, #dcdcdc 100%); */
+    background: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    cursor: default;
+    color: #666 !important;
+    border: 1px solid #9e9e9e !important;
+    background: transparent;
+    box-shadow: none;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    margin-left: 0;
+}
+
+.dataTables_info {
+    font-size: 13px !important;
+}
+
+table.dataTable.no-footer {
+    border-bottom: none !important;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* css for dataTable paginate button end */
+
+/* css for table body th td start*/
+table.dataTable thead .sorting {
+    background: url("../../images/sort_both.png") no-repeat center right !important;
+}
+
+table.dataTable thead .sorting_asc {
+    background-image: url("../../images/sort_asc.png") !important;
+}
+
+table.dataTable thead .sorting_desc {
+    background-image: url("../../images/sort_desc.png") !important;
+}
+
+.tblborder td {
+    padding: 4px 2px !important;
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle;
+    border-radius: 2px;
+}
+
+.tblborder th {
+    padding: 3px 2px !important;
+}
+
+table.dataTable.display tbody tr.odd {
+    background-color: #e0e0e0 !important;
+}
+
+table.dataTable.display tbody tr.odd > .sorting_1, table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+    background-color: #e0e0e0 !important;
+}
+
+
+.dataTables_wrapper th {
+    padding: 2px 10px !important;
+}
+
+.dataTables_wrapper td {
+    padding: 4px 6px !important;
+    border-top: none !important;
+    border-bottom: 1px solid #9e9e9e !important;
+    border-right: 1px solid #9e9e9e !important;
+    font-size: 14px !important;
+    border-width: 1px;
+}
+
+table.dataTable th {
+    border-top: 1px solid #9e9e9e;
+    /*  border-bottom: 1px solid #9e9e9e !important; */
+    border-right: 1px solid #9e9e9e;
+}
+
+table.dataTable thead th {
+    color: #0073b7 !important;
+}
+
+/* for giving border to first element */
+table.dataTable tr:first-child th:first-child,
+table.dataTable td:first-child {
+    border-left: 1px solid #9e9e9e !important;
+}
+
+/* for complex header remove top border */
+table.dataTable tr:nth-child(2) th {
+    border-top: none !important;
+}
+
+table.dataTable tfoot th {
+    border-bottom: 1px solid #9e9e9e !important;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+    /*  padding: 0 8px !important; */
+    /*  padding-top:0 !important;
+     padding-bottom:0 !important; */
+    border-bottom: 1px solid #9e9e9e;
+}
+
+.dataTables_wrapper tbody tr:hover {
+    background-color: #eceff1 !important;
+    z-index: 2;
+}
+
+
+/* css for table body th td end*/
+
+/* for checkbox in dataTable start */
+th input[type='checkbox'] + label {
+    margin-left: 8%;
+}
+
+td input[type='checkbox'] + label {
+    margin-left: 8%;
+}
+
+/* for checkbox in dataTable end */
+
+/* for border in print page */
+@media print {
+    table td, table th {
+        border: 1px solid #9e9e9e;
+    }
+}
+
+.tblborder {
+    border-collapse: unset !important;
+
+    td,th {
+        border-radius: 0 !important;
+    }
+}
+
+/*to overcome space of cells-start*/
+
+/*Borders Fix*/
+
+.tblborder th,
+.tblborder tbody td {
+    border-top: 1px solid #9e9e9e !important;
+    border-bottom: 1px solid #9e9e9e !important;
+    font-size: 14px !important;
+}
+
+.tblborder th:first-child,
+.tblborder tbody td:first-child {
+    border-left: 1px solid #9e9e9e !important;
+}
+
+.tblborder th:not(:last-child),
+.tblborder tbody td:not(:last-child) {
+    border-right: 1px solid #9e9e9e !important;
+}
+
+.tblborder th:last-child,
+.tblborder tbody td:last-child {
+    border-right: 1px solid #9e9e9e !important;
+}
+
+
+
+tfoot th,
+tfoot td {
+    text-align: center;
+}
+
+/*to overcome space of cells-end*/
+.wrapok {
+    white-space: nowrap !important;
+}
+
+.nowrap {
+    white-space: word-wrap !important;
+}
+
+table .btn {
+    padding: 0 9px !important;
+    font-size: 10px;
+}
+
+table i {
+    color: #0073b7 !important;
+}
+
+table input[type=text]:not(.browser-default) {
+    height: 2rem !important;
+}
+
+input[type=search] {
+    /*    margin-top: 11% !important; */
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+    height: 2rem !important;
+    text-indent: 10px !important;
+}
+
+input[type=search]:focus {
+    border-bottom: 1px !important;
+    box-shadow: 0 1px 0 0 !important;
+}
+
+td button i.material-icons {
+    font-size: 18px;
+}
+
+td a {
+    color: #0073b7 !important;
+    font-weight: 800;
+}
+
+td .btn-flat {
+    color: #0073b7;
+    border: none;
+    border-radius: 2px;
+    display: inline-block;
+    // height: 32px;
+    // line-height: 32px;
+    padding: 0 0;
+    text-transform: uppercase;
+    vertical-align: middle;
+    -webkit-tap-highlight-color: transparent;
+}
+
+table [type="checkbox"].filled-in:not(:checked) + label:after {
+    height: 15px;
+    width: 15px;
+    background-color: transparent;
+    border: 1px solid #5a5a5a;
+    top: 0px;
+    z-index: 0;
+}
+
+table [type="checkbox"].filled-in:checked + label:after {
+    top: 0;
+    width: 15px;
+    height: 15px;
+    border: 1px solid black;
+    background-color: transparent;
+    z-index: 0;
+}
+
+table [type="checkbox"].filled-in:checked + label:before {
+    top: 0;
+    left: 1px;
+    width: 6px;
+    height: 10px;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    -webkit-transform: rotateZ(37deg);
+    transform: rotateZ(37deg);
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 90% 80%;
+}
+
+th a {
+    font-size: 15px;
+    color: #0073b7 !important;
+}
+
+th a:active {
+    background: transparent;
+}

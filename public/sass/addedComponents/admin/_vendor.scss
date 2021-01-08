@@ -1,0 +1,52 @@
+.noborder>td{
+	border:none !important;
+	border-bottom:none !important;
+	border-left:none !important;
+	/* empty-cells: hide; */
+}
+
+tr.noborder:first-child th:first-child, tr.noborder td:first-child{
+border-left:none !important;
+}
+#modalTable_wrapper div.dt-buttons{
+	margin-left: 33% !important;
+}
+
+ .sidenavDarker{
+ 	color:#282d36 !important;
+ }
+
+/*For Desktops*/
+
+@media screen and (min-width: 993px) {
+
+    
+
+}
+
+/*For Tablets*/
+
+@media screen and (max-width: 992px) and (min-width: 600px) {
+
+
+
+}
+
+/*For Mobiles*/
+@media only screen and (max-width: 600px) {
+
+	.vendAddSuppBtn {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+}
+
+/*For Extra Small Mobiles {IPHONE 4}*/
+
+@media only screen and (max-width: 320px) {
+
+
+
+}

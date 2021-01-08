@@ -1,0 +1,372 @@
+<html>
+
+<head>
+    <% include bankCommanComp/header %>
+</head>
+
+<body>
+    <!-- navbar start -->
+    <% include bankCommanComp/navbar%>
+    <!-- navbar end -->
+
+    <main class="paddingBody">
+        <br>
+        <div class="container">
+            <!-- <button class="btn waves-effect waves-light blue-gradient" id="test">Text</button> -->
+            <form action="saveCancelChequeEntry" method="post" id="saveCancelChequeForm">
+                <div class="row  z-depth-3">
+                    <div class="col l12 m12 s12">
+                        <h4 class="center"> Cheque Cancel </h4>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m5 l5 push-l1 push-m1">
+                            <i class="material-icons prefix">rate_review</i>
+                            <input id="chqNo" type="text" class="validate" name="chqNo" required minlength="6"
+                                maxlength="6">
+                            <label for="chqNo" class="active"><span class="red-text">*&nbsp;</span>Enter Cheque Number</label>
+                        </div>
+                        <div class="input-field col s12 m5 l5 push-l1 push-m1">
+                            <button class="btn" type="button" onclick='getChequeDetails($("#chqNo").val())'>Get Details</button>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="row  z-depth-3" id="chqDetailsId">
+                    <div class="col l12 m12 s12">
+                        <h4 class="center"> Cheque Details </h4>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12 m5 l5 push-l1 push-m1">
+
+                            <input type="hidden" id="cancelChqNo" name="cancelChqNo" minLength="6" maxLength="6">
+                            <!-- <tr>
+                                                <th>Account Holder Name</th>
+                                                <td><input placeholder="Account Holder Name" id="accountHolderName" type="text" class="validate center"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Account Type</th>
+                                                <td><input placeholder="Account Type" id="accountType" type="text" class="validate center"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Actual Balance</th>
+                                                <td><input placeholder="Actual Balance" id="actualBalance" type="text" class="validate center"></td>
+                                            </tr> -->
+
+                            <tr>
+                                <th><b>Account No.:</b></th>
+                                <td><span id="accountNo" readonly></span></td>
+
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Cheque Book Ref.:</b></td>
+                                <td><span id="chqBookRefNo"></span></td>
+
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Cheque date:</b></td>
+                                <td><span id="chqDate"></span></td>
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Payee Name:</b></td>
+                                <td><span id="payeeName"></span></td>
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Cheque Amount:</b></td>
+                                <td><span id="chqAmt"></span></td>
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Remarks:</b></td>
+                                <td><span id="remark"></span></td>
+                            </tr>
+                            <br>
+                            <br>
+                            <tr>
+                                <td><b>Cheque Current Status:</b></td>
+                                <td><span id="chqStatus"></span></td>
+                            </tr>
+                            <br>
+                            <br>
+
+                            <div id="cancelReasonRow">
+                                <tr>
+                                    <td><b>Cancel Reason:</b></td>
+                                    <td><span id="cancelReason"></span></td>
+                                </tr>
+                            </div>
+
+                            <br>
+                            <br>
+
+
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+
+                </div>
+
+                <div class="row z-depth-3" id="addedDateTimeId">
+                    <div class="col s12 l12 m12">
+                        <div class="col s12 l5 m5 push-l1 push-m1">
+                            <br>
+                            <h6>Cheque Issue Date :
+                                <span id="chqIssueDate" val=""></span>
+                            </h6>.
+                            <br>
+                        </div>
+                        <div class="col s12 l5 m5 push-l1 push-m1">
+                            <br>
+                            <h6>Cheque Cancel Date :
+                                <span id="chqCancelDate" val=""></span>
+                            </h6>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div id="cancelDivId" class="row  z-depth-3">
+                    <div class="col l12 m12 s12">
+
+                        <tr>
+                            <h5 class="center"> Proceed with Cancellation </h5>
+                            <br>
+                        </tr>
+                        <tr>
+                            <td>Enter Cancel Reason:</td>
+                            <td><input type="text" id="cancelReasonText" name="cancelReasonText" required maxLength="200"></td>
+
+                        </tr>
+
+                        <div class="input-field col s12 m6 l4 offset-l5 center-align">
+                            <button class="btn waves-effect waves-light blue-gradient" type="submit" id="saveCancelChequeForm"
+                                onclick="saveCancelCheque();">Proceed<i class="material-icons right">send</i> </button>
+                        </div>
+
+
+
+                    </div>
+
+                    <br>
+                    <br>
+
+                </div>
+
+
+
+                <br>
+            </form>
+
+        </div>
+
+
+
+
+    </main>
+    <!--content end-->
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        $('#chqDetailsId').hide();
+        $('#cancelDivId').hide();
+        $('#addedDateTimeId').hide();
+        $('#cancelReasonRow').hide();
+        //allowed only numbers 
+        $('#chqNo').keypress(function (event) {
+            var key = event.which;
+
+            if (!(key >= 48 && key <= 57 || key === 13))
+                event.preventDefault();
+        });
+
+    });
+
+    //get cheque details by cheque number
+    function getChequeDetails(chqNo) {
+        if (chqNo == "") {
+            var $toastContent = $('<span>Please Enter Cheque Number <span>');
+            Materialize.Toast.removeAll();
+            Materialize.toast($toastContent, 3000);
+        } else if (chqNo.length != 6) {
+            var $toastContent = $('<span>Please Enter Valid Cheque Number <span>');
+            Materialize.Toast.removeAll();
+            Materialize.toast($toastContent, 3000);
+        } else {
+
+
+            var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_CHEQUE_DETAILS_BY_CHEQUE_NO%>/" + chqNo;
+            $.ajax({
+                type: "GET",
+                url: url,
+                /* data: "id=" + id + "&name=" + name, */
+                beforeSend: function () {
+                    $('.preloader-background').show();
+                    $('.preloader-wrapper').show();
+                },
+                success: function (data) {
+                    var chequeEntry = data.bankChequeEntry;
+                    if (data == "") {
+                        $('#chqDetailsId').hide();
+                        $('#cancelDivId').hide();
+
+                        var $toastContent = $('<span>Data not found or Enter Valid Cheque Number <span>');
+                        Materialize.Toast.removeAll();
+                        Materialize.toast($toastContent, 3000);
+                        $('#msg').text("Please Enter Valid Cheque No");
+                    } else {
+                        $('#chqDetailsId').show();
+                        $('#addedDateTimeId').show();
+
+
+                        var chqDate1 = formatDateTime(chequeEntry.chequeDate);
+
+
+
+                        var chqIssueTime = formatDateTime(chequeEntry.createdAt);
+
+                        //to get cancel Date Time
+                        var chqCancelDateTime = "";
+                        if (chequeEntry.cancelDate != null) {
+                            chqCancelDateTime = formatDateTime(chequeEntry.cancelDate);
+                        }
+
+
+
+
+                        if (chequeEntry.bankChequeBook != null) {
+                            $('#accountNo').text(chequeEntry.bankChequeBook.bankAccount.accountNumber)
+                            $('#chqBookRefNo').text(chequeEntry.bankChequeBook.chqBookName);
+                        } else {
+                            $('#accountNo').text("Manual Printing");
+                            $('#chqBookRefNo').text("Manual Printing");
+                        }
+
+                        //$('#chqBookRefNo').text(chequeEntry.bankChequeBook.chqBookName);	
+                        $('#chqDate').text(chqDate1);
+                        $('#payeeName').text(chequeEntry.payeeName);
+                        $('#chqAmt').text(chequeEntry.chequeAmount);
+                        $('#remark').text(chequeEntry.remark);
+                        $('#chqStatus').text(chequeEntry.chequeStatus);
+                        $('#cancelReason').text(chequeEntry.cancelReason);
+
+                        $('#cancelChqNo').val(chqNo);
+
+                        $('#chqIssueDate').text(chqIssueTime);
+                        $('#chqCancelDate').text(chqCancelDateTime);
+
+                        if (chequeEntry.chequeStatus == "Cancelled") {
+                            $('#cancelDivId').hide();
+                            $('#cancelReasonRow').show();
+                        } else {
+                            $('#cancelDivId').show();
+                        }
+
+                    }
+
+
+                    $('.preloader-wrapper').hide();
+                    $('.preloader-background').hide();
+                },
+                error: function (xhr, status, error) {
+                    $('.preloader-wrapper').hide();
+                    $('.preloader-background').hide();
+                    //alert(error +"---"+ xhr+"---"+status);
+                    $('#addeditmsg').modal('open');
+                    $('#msgHead').text("Message : ");
+                    $('#msg').text("Something Went Wrong");
+                    setTimeout(function () {
+                        $('#addeditmsg').modal('close');
+                    }, 1000);
+                }
+
+            });
+        }
+
+
+    }
+
+    //Set req option for save cancel cheque and hit front end api
+    function saveCancelCheque() {
+        $('#saveCancelChequeForm').attr('disabled', true);
+
+
+        var chequeNo = $("#chqNo").val().trim();
+        var cancelReason = $("#cancelReasonText").val().trim();
+
+        if (cancelReason == "") {
+            $('#saveCancelChequeForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Cancel Reason', '3000', 'toastError');
+            return false;
+        }
+
+        var data = {
+            chequeNo: chequeNo,
+            cancelReason: cancelReason
+        }
+
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.SAVE_CANCEL_CHEQUE%>";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastMg');
+                    $('#saveCancelChequeForm').attr('disabled', false);
+                    // $("#bankname").val("");
+                    // $("#bankshortname").val("");
+
+                    window.location.href = "/bank";
+                    // hitForTableData();
+                } else if (data.success == false) {
+                    $('#saveCancelChequeForm').attr('disabled', false);
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                    console.log(data);
+                }
+            },
+            error: function (xhr) {
+                $('#saveCancelChequeForm').attr('disabled', false);
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+
+
+    }
+</script>
+<% include ../commonComponents/footer.ejs %>
+
+</html>

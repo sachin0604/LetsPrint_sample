@@ -1,0 +1,41 @@
+.validateForm{
+span.error {
+    color: red;
+    display: block;
+     margin-top: 0 !important; 
+     margin-left:3rem;
+    
+    padding: 0;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+    
+    
+  } 
+  .select-wrapper span.caret {
+    color: initial;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 10px;
+    margin: 20px 0;
+    font-size: 10px;
+    line-height: 10px;
+ }
+ label.required:before{
+    // content: "*";
+    // color:red;
+     }  
+     .select-wrapper span.error{
+             margin-left:0;
+     }  
+     .select-wrapper input.select-dropdown {
+
+        margin: 0 0 10px 0;
+    
+    }
+
+    .noRowMargin{
+        margin-bottom: 0;
+}
+}

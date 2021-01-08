@@ -1,0 +1,209 @@
+
+<script>
+    $(document).ready(function(){
+
+         var columnNo = [{
+            "width": "2%",
+            "targets": 0
+        },
+        {
+            "width": "12%",
+            "targets": 1
+        },
+        {
+            "width": "5%",
+            "targets": 2
+        },
+        {
+            "width": "5%",
+            "targets": 3
+        },
+        {
+            "width": "4%",
+            "targets": 4
+        },
+        {
+            "width": "2%",
+            "targets": 5
+        },
+        {
+            "width": "2%",
+            "targets": 6
+        }
+        ];
+        var tableId = "tblData";
+        var pdfWidth = [20, '*', '*', '*'];
+        getDataTableJson(tableId, columnNo, pdfWidth);
+
+          hitForTableData();
+
+
+})
+ 
+// hit for table data
+ function hitForTableData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_CB_LIST%>";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setTableData(data);
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+
+// set table data
+function setTableData(resultData) {
+        // console.log(resultData);
+        var data = resultData.chqBookList;
+        var t = $('#tblData').DataTable();
+        t.clear().draw();
+        if (data.length == null) {
+            t.row.add('<tr>' +
+                '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                '</tr>');
+        } else {
+            // $('#tblData tbody').empty();
+            // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+            for (i = 0; i < data.length; i++) {
+                var chqBookName = data[i].chequeBookName,
+                    accounNo =data[i].bankAccount.bank.shortName+"-"+ data[i].bankAccount.accountNumber,
+                    startingChqNo = data[i].startChequeNumber,
+                    endChqNo = data[i].endChequeNumber,
+                    totalLeave = data[i].numberOfLeaves,
+                    unusedLeave = data[i].numberOfUnusedLeaves;
+                t.row.add(
+                    [(i + 1),
+                        chqBookName,
+                        accounNo,
+                        startingChqNo,
+                        endChqNo,
+                        totalLeave,
+                        unusedLeave
+
+                    ]).draw(false);
+            }
+        }
+    }
+
+//set req option for save cheque book and call frontend api
+function addChequeBook(){
+    $('#saveChequeBookForm').attr('disabled', true);
+    var bankAccountId=$("#bankAccountId").val().trim();// this will store bankAccountId and Bank id like 1-2  where first one is account id and last one is bank id
+    bankAccountId=bankAccountId.split("-")[0];
+    var templateId=$("#templateId").val().trim();
+    var noOfLeaves=$("#noOfLeaves").val().trim();
+    var addedDate=$("#addedDate").val().trim();
+    var startingChqNo=$("#startingChqNo").val().trim();
+    var endChequeNo=$("#endChequeNo").val().trim();
+
+    if (bankAccountId == 0) {
+            $('#saveChequeBookForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Account Number', '3000', 'toastError');
+            return false;
+        } else if (templateId == 0) {
+            $('#saveChequeBookForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Template ', '3000', 'toastError');
+            return false;
+        } else if (noOfLeaves == "") {
+            $('#saveChequeBookForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter No of Leaves ', '3000', 'toastError');
+            return false;
+        } else if (startingChqNo == "") {
+            $('#saveChequeBookForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter Starting Cheque No. ', '3000', 'toastError');
+            return false;
+        } else if (endChequeNo == "") {
+            $('#saveChequeBookForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Enter End Cheque No. ', '3000', 'toastError');
+            return false;
+        }
+
+          var data = {
+                bankAccountId: bankAccountId,
+                templateId: templateId,
+                noOfLeaves: noOfLeaves,
+                startingChqNo: startingChqNo,
+                endChequeNo: endChequeNo
+            }
+
+              var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.SAVE_CHEQUE_BOOK%>";
+
+                   $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                // contentType: 'application/json,charset=utf-8',
+                // beforeSend: function () {
+                //     $(".hiddenAjaxLoader").show();
+                // },
+                // complete: function () {
+                //     $(".hiddenAjaxLoader").hide();
+                // },
+                dataType: 'json',
+                success: function (data) {
+
+                    // if (data != null) {
+                    //     window.location.href = "/admin"
+                    // }
+                    if (data.success == true) {
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastMg');
+                        // $('#saveAccountForm').attr('disabled', false);
+                        // $("#bankname").val("");
+                        // $("#bankshortname").val("");
+
+                        window.location.href = "/manageCB";
+                        // hitForTableData();
+                    } else if (data.success == false) {
+                        $('#saveBankSubmit').attr('disabled', false);
+                        ////Materialize.Toast.removeAll();
+                        Materialize.toast(data.msg, 3000, 'toastError');
+                        console.log(data);
+                    }
+                },
+                error: function (xhr) {
+                    $('#saveAccountForm').attr('disabled', false);
+                    Materialize.Toast.removeAll();
+                    Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                    $(".hiddenAjaxLoader").hide();
+                    $("body").css({
+                        "overflow": "show"
+                    });
+                }
+            });
+       
+
+}
+   
+</script>

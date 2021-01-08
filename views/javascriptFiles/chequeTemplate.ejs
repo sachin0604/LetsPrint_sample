@@ -1,0 +1,415 @@
+<script>
+    $(document).ready(function () {
+
+        var columnNo = [{
+                "width": "2%",
+                "targets": 0
+            },
+            {
+                "width": "5%",
+                "targets": 1
+            },
+            {
+                "width": "5%",
+                "targets": 2
+            },
+            {
+                "width": "5%",
+                "targets": 3
+            },
+            {
+                "width": "5%",
+                "targets": 4
+            },
+            {
+                "width": "2%",
+                "targets": 5
+            },
+        ]
+        var tableId = "tblData";
+        var pdfWidth = [20, '*', '*', '*'];
+        getDataTableJson(tableId, columnNo, pdfWidth);
+
+        hitForTableData();
+
+    });
+
+    // hit for table data
+    function hitForTableData() {
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.FETCH_CB_TEMPLATE_LIST%>";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            // data: data,
+            // contentType: 'application/json,charset=utf-8',
+            beforeSend: function () {
+                $(".hiddenAjaxLoader").show();
+            },
+            complete: function () {
+                $(".hiddenAjaxLoader").hide();
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.success == true) {
+                    Materialize.Toast.removeAll();
+                    setTableData(data);
+
+                } else if (data.success == false) {
+                    Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                }
+            },
+            error: function (xhr) {
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+    }
+    //set table data
+    function setTableData(resultData) {
+        // console.log(resultData);
+        var data = resultData.chqTemplate;
+        var t = $('#tblData').DataTable();
+        t.clear().draw();
+        if (data.length == null) {
+            t.row.add('<tr>' +
+                '<td colspan="' + count + '"><center>No Data Found</center></td>' +
+                '</tr>');
+        } else {
+            // $('#tblData tbody').empty();
+            // moment(data[i].createdAt).format("DD-MM-YYYY HH:mm:ss"), moment(data[i].updatedAt).format("DD-MM-YYYY HH:mm:ss")
+            for (i = 0; i < data.length; i++) {
+                var templateName = data[i].templateName,
+                    bankName = data[i].bank.shortName,
+                    addedDate = formatDateTime(data[i].createdAt),
+                    updateDate = formatDateTime(data[i].updatedAt),
+                    templateId = data[i].id;
+                userId = data[i].userId;
+                if (userId == -1) {
+                    t.row.add(
+                        [(i + 1),
+                            templateName,
+                            bankName,
+                            addedDate,
+                            updateDate,
+                            ''
+
+                        ]).draw(false);
+                } else {
+                    t.row.add(
+                        [(i + 1),
+                            templateName,
+                            bankName,
+                            addedDate,
+                            updateDate,
+                            '<a href="<%= FRONTEND.BASE_URL+BANK_FRONTEND.GET_UPDATE_PAGE_FOR_CHEQUE_TEMPLATE%>/' +
+                            templateId + '">' +
+                            '<i class="material-icons tooltipped" data-position="left" data-delay="50" data-tooltip="Edit" >edit</i></a>'
+
+                        ]).draw(false);
+                }
+
+            }
+        }
+    }
+
+    //set req option for save template and hit frontend api
+    function addTemplate() {
+
+        $('#saveTemplateForm').attr('disabled', true);
+        positionSetting();
+
+        var bankId = $("#bankId").val().trim();
+        var identifierName = $("#identifierName").val().trim();
+        var chqDateTop = $("#chqDateTop").val().trim();
+        var chqDateLeft = $("#chqDateLeft").val().trim();
+        var chqDateWidth = $("#chqDateWidth").val().trim();
+        var chqDateHeight = $("#chqDateHeight").val().trim();
+
+        var payeeNameTop = $("#payeeNameTop").val().trim();
+        var payeeNameLeft = $("#payeeNameLeft").val().trim();
+        var payeeNameWidth = $("#payeeNameWidth").val().trim();
+
+        var amountTop = $("#amountTop").val().trim();
+        var amountLeft = $("#amountLeft").val().trim();
+        var amountWidth = $("#amountWidth").val().trim();
+
+        var amountInWordTop = $("#amountInWordTop").val().trim();
+        var amountInWordLeft = $("#amountInWordLeft").val().trim();
+        var amountInWordWidth = $("#amountInWordWidth").val().trim();
+
+        var acPayeeTop = $("#acPayeeTop").val().trim();
+        var acPayeeLeft = $("#acPayeeLeft").val().trim();
+        var acPayeeWidth = $("#acPayeeWidth").val().trim();
+
+        var dateFormate = $("#dateFormate").val().trim();
+        var chequeImageBase64 = $("#chequeImageBase64").val().trim();
+
+        if (bankId == 0) {
+            $('#saveTemplateForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Bank name', '3000', 'toastError');
+            return false;
+        }
+        // if (bankIdf == 0) {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Select Bank name', '3000', 'toastError');
+        //     return false;
+        // } else if (accountTypef == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Select Account Type', '3000', 'toastError');
+        //     return false;
+        // } else if (accountHolderNamef == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Enter Account Holder Name', '3000', 'toastError');
+        //     return false;
+        // } else if (accountNumberf == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Enter Account Number', '3000', 'toastError');
+        //     return false;
+        // }
+        // else if (ifscCodef == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Enter IFSC Code', '3000', 'toastError');
+        //     return false;
+        // } else if (branchCodef == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Enter Branch Code', '3000', 'toastError');
+        //     return false;
+        // } else if (addressf == "") {
+        //     $('#saveAccountForm').attr('disabled', false);
+        //     Materialize.Toast.removeAll();
+        //     Materialize.toast('Please Enter Bank Address', '3000', 'toastError');
+        //     return false;
+        // }
+        // else {
+        ////Materialize.Toast.removeAll();
+        // checkForSpecialCharacters(bankname);                   
+        var data = {
+
+            bankId: bankId,
+            templateName: identifierName,
+
+            chqDateTop: chqDateTop,
+            chqDateLeft: chqDateLeft,
+            chqDateWidth: chqDateWidth,
+            chqDateHeight: chqDateHeight,
+
+            payeeNameTop: payeeNameTop,
+            payeeNameLeft: payeeNameLeft,
+            payeeNameWidth: payeeNameWidth,
+
+            amountTop: amountTop,
+            amountLeft: amountLeft,
+            amountWidth: amountWidth,
+
+            amountInWordTop: amountInWordTop,
+            amountInWordLeft: amountInWordLeft,
+            amountInWordWidth: amountInWordWidth,
+
+            accPayeeTop: acPayeeTop,
+            accPayeeLeft: acPayeeLeft,
+            accPayeeWidth: acPayeeWidth,
+            dateFormate: dateFormate,
+            templateImgBase64: chequeImageBase64
+        }
+        // links in app.js in app.locals
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.SAVE_CB_TEMPLATE%>";
+
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: data,
+            // contentType: 'application/json,charset=utf-8',
+            // beforeSend: function () {
+            //     $(".hiddenAjaxLoader").show();
+            // },
+            // complete: function () {
+            //     $(".hiddenAjaxLoader").hide();
+            // },
+            dataType: 'json',
+            success: function (data) {
+
+                // if (data != null) {
+                //     window.location.href = "/admin"
+                // }
+                if (data.success == true) {
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastMg');
+                    // $('#saveAccountForm').attr('disabled', false);
+                    // $("#bankname").val("");
+                    // $("#bankshortname").val("");
+
+                    window.location.href = "/manageChqTemplate";
+                    // hitForTableData();
+                } else if (data.success == false) {
+                    $('#saveTemplateForm').attr('disabled', false);
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                    console.log(data);
+                }
+            },
+            error: function (xhr) {
+                $('#saveTemplateForm').attr('disabled', false);
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+        //}
+    }
+
+    //on Update button click , set req option for update template and hit frontend api
+    function updateTemplate() {
+
+        positionSetting();
+
+        $('#updateTemplateForm').attr('disabled', true);
+
+        var chequeTemplateId = $("#chequeTemplateId").val().trim();
+        var bankId = $("#bankId").val().trim();
+        var identifierName = $("#identifierName").val().trim();
+        var chqDateTop = $("#chqDateTop").val().trim();
+        var chqDateLeft = $("#chqDateLeft").val().trim();
+        var chqDateWidth = $("#chqDateWidth").val().trim();
+        var chqDateHeight = $("#chqDateHeight").val().trim();
+
+        var payeeNameTop = $("#payeeNameTop").val().trim();
+        var payeeNameLeft = $("#payeeNameLeft").val().trim();
+        var payeeNameWidth = $("#payeeNameWidth").val().trim();
+
+        var amountTop = $("#amountTop").val().trim();
+        var amountLeft = $("#amountLeft").val().trim();
+        var amountWidth = $("#amountWidth").val().trim();
+
+        var amountInWordTop = $("#amountInWordTop").val().trim();
+        var amountInWordLeft = $("#amountInWordLeft").val().trim();
+        var amountInWordWidth = $("#amountInWordWidth").val().trim();
+
+        var acPayeeTop = $("#acPayeeTop").val().trim();
+        var acPayeeLeft = $("#acPayeeLeft").val().trim();
+        var acPayeeWidth = $("#acPayeeWidth").val().trim();
+
+        var dateFormate = $("#dateFormate").val().trim();
+        var chequeImageBase64 = $("#chequeImageBase64").val().trim();
+
+        if (bankId == 0 || chequeTemplateId == 0) {
+            $('#updateTemplateForm').attr('disabled', false);
+            Materialize.Toast.removeAll();
+            Materialize.toast('Please Select Bank name', '3000', 'toastError');
+            return false;
+        }
+
+        var data = {
+
+            bankId: bankId,
+            chequeTemplateId: chequeTemplateId,
+            templateName: identifierName,
+
+            chqDateTop: chqDateTop,
+            chqDateLeft: chqDateLeft,
+            chqDateWidth: chqDateWidth,
+            chqDateHeight: chqDateHeight,
+
+            payeeNameTop: payeeNameTop,
+            payeeNameLeft: payeeNameLeft,
+            payeeNameWidth: payeeNameWidth,
+
+            amountTop: amountTop,
+            amountLeft: amountLeft,
+            amountWidth: amountWidth,
+
+            amountInWordTop: amountInWordTop,
+            amountInWordLeft: amountInWordLeft,
+            amountInWordWidth: amountInWordWidth,
+
+            accPayeeTop: acPayeeTop,
+            accPayeeLeft: acPayeeLeft,
+            accPayeeWidth: acPayeeWidth,
+            dateFormate: dateFormate,
+            templateImgBase64: chequeImageBase64
+        }
+        // links in app.js in app.locals
+        var url = "<%= FRONTEND.BASE_URL+BANK_FRONTEND.UPDATE_CB_TEMPLATE%>";
+
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: data,
+            // contentType: 'application/json,charset=utf-8',
+            // beforeSend: function () {
+            //     $(".hiddenAjaxLoader").show();
+            // },
+            // complete: function () {
+            //     $(".hiddenAjaxLoader").hide();
+            // },
+            dataType: 'json',
+            success: function (data) {
+
+                // if (data != null) {
+                //     window.location.href = "/admin"
+                // }
+                if (data.success == true) {
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastMg');
+                    // $('#saveAccountForm').attr('disabled', false);
+                    // $("#bankname").val("");
+                    // $("#bankshortname").val("");
+
+                    window.location.href = "/manageChqTemplate";
+                    // hitForTableData();
+                } else if (data.success == false) {
+                    $('#updateTemplateForm').attr('disabled', false);
+                    ////Materialize.Toast.removeAll();
+                    Materialize.toast(data.msg, 3000, 'toastError');
+                    console.log(data);
+                }
+            },
+            error: function (xhr) {
+                $('#updateTemplateForm').attr('disabled', false);
+                Materialize.Toast.removeAll();
+                Materialize.toast('Something went wrong. Please retry', 3000, 'toastError');
+                $(".hiddenAjaxLoader").hide();
+                $("body").css({
+                    "overflow": "show"
+                });
+            }
+        });
+        //}
+    }
+
+    // set form data for update 
+    function setFormDataForUpdate(responseData) {
+
+        chequeTemplate = responseData;
+        // $("#chequeTemplateId").val(chequeTemplate.id);
+        $("#chequeTemplateId").focus();
+
+        $("#bankId").val(chequeTemplate.bankId).change();
+        $("#bankId").focus();
+
+
+        $("#identifierName").val(chequeTemplate.templateName);
+        $("#identifierName").focus();
+
+        document.getElementById('addImage').src = chequeTemplate.templateImgBase64;
+
+
+    }
+</script>
